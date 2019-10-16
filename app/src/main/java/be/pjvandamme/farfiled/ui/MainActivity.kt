@@ -1,7 +1,8 @@
-package be.pjvandamme.farfiled
+package be.pjvandamme.farfiled.ui
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import be.pjvandamme.farfiled.R
 
 class MainActivity : AppCompatActivity() {
 
