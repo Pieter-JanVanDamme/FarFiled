@@ -29,6 +29,9 @@ class RelationDetailFragment : Fragment() {
             false
         )
         return binding.root
+
+        // TODO: ADD AN IMPLICIT INTENT
+        // TODO: ADD SAFE ARGS TO PASS RELATION OBJECT TO CREATEEDITRELATIONFRAGMENT
     }
 
 

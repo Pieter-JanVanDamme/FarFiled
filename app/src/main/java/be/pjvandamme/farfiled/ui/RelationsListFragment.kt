@@ -33,6 +33,8 @@ class RelationsListFragment : Fragment() {
                 .navigate(R.id.action_relationsListFragment_to_createEditRelationFragment)
         }
         return binding.root
+
+        // TODO: ADD SAFE ARGS TO PASS RELATION OBJECT TO CREATEEDITRELATIONFRAGMENT
     }
 
 

@@ -5,4 +5,6 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="saveText">Save</string>
     <string name="cancelText">Cancel</string>
+    <string name="nameLabel">Name:</string>
+    <string name="synopsisLabel">Synopsis:</string>
 </resources>

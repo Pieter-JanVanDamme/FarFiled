@@ -10,4 +10,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
     }
+    // TODO: decide whether to add support for an Up button
+    // TODO: decide whether to add an options menu
+    // TODO: decide whether to add a navigation drawer
 }

@@ -18,6 +18,10 @@ import be.pjvandamme.farfiled.databinding.FragmentRelationsListBinding
  */
 class CreateEditRelationFragment : Fragment() {
 
+    // TODO: DIFFERENTIATE BETWEEN CREATION AND EDITING
+    // Probably by holding a reference to the Relation being edited.
+    // If there's none: we're creating a new one
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -30,10 +34,16 @@ class CreateEditRelationFragment : Fragment() {
             false
         )
         binding.saveButton.setOnClickListener { view: View ->
+            // TODO: NAVIGATION ACCORDING TO RELATION REFERENCE
+            // IF NULL: CREATE NEW ONE, ADD TO ROOM, NAVIGATE TO RELATIONSLIST
+            // ELSE: UPDATE ATTRIBUTES, NAVIGATE TO ITS RELATIONDETAILFRAGMENT
             view.findNavController()
                 .navigate(R.id.action_createEditRelationFragment_to_relationsListFragment)
         }
         binding.cancelButton.setOnClickListener { view: View ->
+            // TODO: NAVIGATION ACCORDING TO RELATION REFERENCE
+            // IF NULL: NAVIGATE TO RELATIONSLIST
+            // ELSE: NAVIHATE TO ITS RELATIONSDETAILFRAGMENT
             view.findNavController()
                 .navigate(R.id.action_createEditRelationFragment_to_relationsListFragment)
         }
