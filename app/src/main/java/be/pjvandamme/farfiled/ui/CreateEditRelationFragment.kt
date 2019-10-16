@@ -6,8 +6,12 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.databinding.DataBindingUtil
+import androidx.navigation.findNavController
 
 import be.pjvandamme.farfiled.R
+import be.pjvandamme.farfiled.databinding.FragmentCreateEditRelationBinding
+import be.pjvandamme.farfiled.databinding.FragmentRelationsListBinding
 
 /**
  * A simple [Fragment] subclass.
@@ -19,7 +23,21 @@ class CreateEditRelationFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_create_edit_relation, container, false)
+        val binding: FragmentCreateEditRelationBinding = DataBindingUtil.inflate(
+            inflater,
+            R.layout.fragment_create_edit_relation,
+            container,
+            false
+        )
+        binding.saveButton.setOnClickListener { view: View ->
+            view.findNavController()
+                .navigate(R.id.action_createEditRelationFragment_to_relationsListFragment)
+        }
+        binding.cancelButton.setOnClickListener { view: View ->
+            view.findNavController()
+                .navigate(R.id.action_createEditRelationFragment_to_relationsListFragment)
+        }
+        return binding.root
     }
 
 
