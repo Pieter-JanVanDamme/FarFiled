@@ -6,12 +6,18 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.EditText
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.findNavController
 
 import be.pjvandamme.farfiled.R
+import be.pjvandamme.farfiled.database.FarFiledDatabase
 import be.pjvandamme.farfiled.databinding.FragmentCreateEditRelationBinding
 import be.pjvandamme.farfiled.databinding.FragmentRelationsListBinding
+import be.pjvandamme.farfiled.viewmodels.CreateEditRelationViewModel
+import be.pjvandamme.farfiled.viewmodels.CreateEditRelationViewModelFactory
 
 /**
  * A simple [Fragment] subclass.
@@ -33,20 +39,26 @@ class CreateEditRelationFragment : Fragment() {
             container,
             false
         )
-        binding.saveButton.setOnClickListener { view: View ->
-            // TODO: NAVIGATION ACCORDING TO RELATION REFERENCE
-            // IF NULL: CREATE NEW ONE, ADD TO ROOM, NAVIGATE TO RELATIONSLIST
-            // ELSE: UPDATE ATTRIBUTES, NAVIGATE TO ITS RELATIONDETAILFRAGMENT
-            view.findNavController()
-                .navigate(R.id.action_createEditRelationFragment_to_relationsListFragment)
-        }
-        binding.cancelButton.setOnClickListener { view: View ->
-            // TODO: NAVIGATION ACCORDING TO RELATION REFERENCE
-            // IF NULL: NAVIGATE TO RELATIONSLIST
-            // ELSE: NAVIHATE TO ITS RELATIONSDETAILFRAGMENT
-            view.findNavController()
-                .navigate(R.id.action_createEditRelationFragment_to_relationsListFragment)
-        }
+
+        val application = requireNotNull(this.activity).application
+
+        val dataSource = FarFiledDatabase.getInstance(application).relationDao
+
+        // TODO: pass the relationId OR null, depending on what we get in the Bundle
+        val viewModelFactory = CreateEditRelationViewModelFactory(
+            null,
+            dataSource,
+            application
+        )
+
+        val createEditRelationViewModel =
+            ViewModelProviders.of(
+                this, viewModelFactory).get(CreateEditRelationViewModel::class.java)
+
+        binding.createEditRelationViewModel = createEditRelationViewModel
+
+        binding.setLifecycleOwner(this)
+
         return binding.root
     }
 

@@ -1,9 +1,23 @@
 package be.pjvandamme.farfiled.domain
 
+import androidx.room.Entity
+import androidx.room.ForeignKey
+import androidx.room.Index
+import androidx.room.PrimaryKey
+
+@Entity(foreignKeys = [ForeignKey(entity = Relation::class,
+    parentColumns=["relationId"],
+    childColumns = ["relationId"])],
+    indices = arrayOf(
+        Index(value = *arrayOf("ephemeronId", "relationId"))
+    ))
 data class Ephemeron(
-    val relation: Relation,
-    val title: String,
-    val content: String
+    @PrimaryKey(autoGenerate=true)
+    var ephemeronId: Long = 0L,
+    var relationId: Long,
+    var title: String,
+    var content: String
+    // TODO: add dateEdited + aanpassen in Dao
 ){
     companion object{
         val description: String = "currently relevant topics"

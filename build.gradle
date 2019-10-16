@@ -6,6 +6,9 @@ buildscript {
         version_timber = "4.7.1"
         version_material = "material:1.1.0-alpha07"
         version_navigation = "1.0.0-rc02"
+        version_room = "2.0.0"
+        version_lifecycle_extensions = "2.1.0"
+        version_coroutine = "1.1.0"
     }
     repositories {
         google()

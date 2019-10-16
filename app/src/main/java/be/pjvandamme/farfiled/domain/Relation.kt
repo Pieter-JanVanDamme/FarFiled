@@ -1,7 +1,18 @@
 package be.pjvandamme.farfiled.domain
 
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+
+@Entity
 data class Relation(
-    val name: String,
-    val synopsis: String,
-    val inFocus: Boolean
+    @PrimaryKey(autoGenerate=true)
+    var relationId: Long = 0L,
+    var name: String,
+    var synopsis: String,
+    var inFocus: Boolean
+
+    // TODO: invent a way to keep track of a relation's relevancy
+    // simple idea: subtract relevancy points on a daily basis, add relevancy points
+    // when adding/editing ephemerons or editing their data and lifeareas
+    // in any case: add it to the Dao
 )
