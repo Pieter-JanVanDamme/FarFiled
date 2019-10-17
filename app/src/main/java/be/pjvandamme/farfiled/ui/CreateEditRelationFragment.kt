@@ -9,8 +9,10 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 
 import be.pjvandamme.farfiled.R
 import be.pjvandamme.farfiled.database.FarFiledDatabase
@@ -58,6 +60,20 @@ class CreateEditRelationFragment : Fragment() {
         binding.createEditRelationViewModel = createEditRelationViewModel
 
         binding.setLifecycleOwner(this)
+
+        createEditRelationViewModel.navigateToRelationsList.observe(this, Observer{
+            // It appears that this method gets called multiple times, possibly due to an issue
+            // with the backstack that occurs when using the back button to make the keyboard on
+            // an edit text disappear. To avoid this issue, we first check the currentDestination
+            // to prevent a crash due to calling this method a second time when already navigated
+            // away.
+            if (this.findNavController().currentDestination?.id == R.id.createEditRelationFragment) {
+                this.findNavController().navigate(
+                    CreateEditRelationFragmentDirections.actionCreateEditRelationFragmentToRelationsListFragment()
+                )
+                createEditRelationViewModel.doneNavigating()
+            }
+        })
 
         return binding.root
     }

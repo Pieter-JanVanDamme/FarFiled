@@ -48,6 +48,7 @@ class CreateEditRelationViewModel (
     }
 
     fun onSave(name: String, synopsis: String){
+        // TODO: disable save if nothing has been changed
         Timber.i("Got name: " + name + " and synopsis: " + synopsis)
         if(relationKey == null){
             uiScope.launch{
@@ -62,7 +63,9 @@ class CreateEditRelationViewModel (
                 update(relation.value)
             }
         }
-        _navigateToRelationDetail.value = true
+        // TODO: if CREATEEDITRELATIONFRAGMENT is both for viewing and editing, then this will
+        // not be necessary upon simple saving
+        _navigateToRelationsList.value = true
     }
 
     private suspend fun insert(newRelation: Relation){
