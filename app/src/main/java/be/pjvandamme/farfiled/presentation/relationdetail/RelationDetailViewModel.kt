@@ -1,4 +1,4 @@
-package be.pjvandamme.farfiled.viewmodels
+package be.pjvandamme.farfiled.presentation.relationdetail
 
 import android.app.Application
 import android.provider.SyncStateContract.Helpers.insert
@@ -11,7 +11,7 @@ import be.pjvandamme.farfiled.database.RelationDao
 import be.pjvandamme.farfiled.domain.Relation
 import timber.log.Timber
 
-class CreateEditRelationViewModel (
+class RelationDetailViewModel (
     private val relationKey: Long?,
     val database: RelationDao,
     application: Application
@@ -49,6 +49,7 @@ class CreateEditRelationViewModel (
 
     fun onSave(name: String, synopsis: String){
         // TODO: disable save if nothing has been changed
+        // TODO: validate input
         Timber.i("Got name: " + name + " and synopsis: " + synopsis)
         if(relationKey == null){
             uiScope.launch{

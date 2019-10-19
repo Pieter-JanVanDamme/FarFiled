@@ -1,4 +1,4 @@
-package be.pjvandamme.farfiled.ui
+package be.pjvandamme.farfiled.presentation
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle

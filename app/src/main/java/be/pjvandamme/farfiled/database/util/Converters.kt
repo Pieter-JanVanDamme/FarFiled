@@ -1,4 +1,4 @@
-package be.pjvandamme.farfiled.util
+package be.pjvandamme.farfiled.database.util
 
 import androidx.room.TypeConverter
 import be.pjvandamme.farfiled.domain.LifeArea

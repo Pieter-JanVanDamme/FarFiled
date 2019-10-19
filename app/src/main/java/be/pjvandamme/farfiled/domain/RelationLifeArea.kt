@@ -1,7 +1,7 @@
 package be.pjvandamme.farfiled.domain
 
 import androidx.room.*
-import be.pjvandamme.farfiled.util.Converters
+import be.pjvandamme.farfiled.database.util.Converters
 
 @Entity(tableName = "relation_life_area",
     foreignKeys = [ForeignKey(entity = Relation::class,

@@ -5,7 +5,7 @@ import androidx.room.*
 import be.pjvandamme.farfiled.domain.Ephemeron
 import be.pjvandamme.farfiled.domain.Relation
 import be.pjvandamme.farfiled.domain.RelationLifeArea
-import be.pjvandamme.farfiled.util.Converters
+import be.pjvandamme.farfiled.database.util.Converters
 
 @Database(entities = [Relation::class, Ephemeron::class, RelationLifeArea::class],
     version = 1,

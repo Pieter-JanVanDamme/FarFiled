@@ -7,38 +7,20 @@
 
     <fragment
         android:id="@+id/relationsListFragment"
-        android:name="be.pjvandamme.farfiled.ui.RelationsListFragment"
+        android:name="be.pjvandamme.farfiled.presentation.relationslist.RelationsListFragment"
         android:label="fragment_relations_list"
         tools:layout="@layout/fragment_relations_list" >
-        <action
-            android:id="@+id/action_relationsListFragment_to_createEditRelationFragment"
-            app:destination="@id/createEditRelationFragment" />
         <action
             android:id="@+id/action_relationsListFragment_to_relationDetailFragment"
             app:destination="@id/relationDetailFragment" />
     </fragment>
     <fragment
-        android:id="@+id/createEditRelationFragment"
-        android:name="be.pjvandamme.farfiled.ui.CreateEditRelationFragment"
-        android:label="fragment_create_edit_relation"
-        tools:layout="@layout/fragment_create_edit_relation" >
-        <action
-            android:id="@+id/action_createEditRelationFragment_to_relationsListFragment"
-            app:destination="@id/relationsListFragment" />
-        <action
-            android:id="@+id/action_createEditRelationFragment_to_relationDetailFragment"
-            app:destination="@id/relationDetailFragment" />
-    </fragment>
-    <fragment
         android:id="@+id/relationDetailFragment"
-        android:name="be.pjvandamme.farfiled.ui.RelationDetailFragment"
+        android:name="be.pjvandamme.farfiled.presentation.relationdetail.RelationDetailFragment"
         android:label="fragment_relation_detail"
-        tools:layout="@layout/fragment_relation_detail" >
+        tools:layout="@layout/fragment_relation_detail">
         <action
             android:id="@+id/action_relationDetailFragment_to_relationsListFragment"
             app:destination="@id/relationsListFragment" />
-        <action
-            android:id="@+id/action_relationDetailFragment_to_createEditRelationFragment"
-            app:destination="@id/createEditRelationFragment" />
     </fragment>
 </navigation>

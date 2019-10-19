@@ -7,4 +7,6 @@
     <string name="cancelText">Cancel</string>
     <string name="nameLabel">Name:</string>
     <string name="synopsisLabel">Synopsis:</string>
+    <string name="relationSynopsisToolText">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco.</string>
+    <string name="relationNameToolText">+FiLas (First Lastname)</string>
 </resources>
