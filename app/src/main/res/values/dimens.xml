@@ -2,4 +2,5 @@
 <resources>
     <dimen name="relationNameEditWidth">300dp</dimen>
     <dimen name="listItemRelationImageSize">64dp</dimen>
+    <dimen name="relationDetailLayoutMargin">24dp</dimen>
 </resources>

@@ -6,6 +6,14 @@ enum class LifeArea(
     val detailedDescription: String,
     val sequenceNumber: Int
 ){
+    EPHEMERA(
+        "now",
+        "currently relevant topics",
+        "currently relevant projects/circumstances or latest " +
+                "developments in some area, topics of conversation, anything important for " +
+                "future interactions (promises/debts/favors owed, important dates in the " +
+                "near-future)",
+        0),
     PERSONAL(
         "self",
         "physical and mental attributes",

@@ -2,7 +2,6 @@ package be.pjvandamme.farfiled.database
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
-import be.pjvandamme.farfiled.domain.Ephemeron
 import be.pjvandamme.farfiled.domain.RelationLifeArea
 
 @Dao

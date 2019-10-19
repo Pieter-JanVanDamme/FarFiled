@@ -24,6 +24,10 @@ class RelationDetailViewModel (
     private val relation = MediatorLiveData<Relation?>()
     fun getRelation() = relation
 
+    private var _enableSaveButton = MutableLiveData<Boolean>()
+    val enableSaveButton: LiveData<Boolean>
+        get() = _enableSaveButton
+
     private var _navigateToRelationsList = MutableLiveData<Boolean>()
     val navigateToRelationsList: LiveData<Boolean>
         get() = _navigateToRelationsList
@@ -42,16 +46,28 @@ class RelationDetailViewModel (
     private fun initializeNewRelation(){
         uiScope.launch{
             relation.addSource(
-                database
-                    .getRelationWithId(
-                        insert(
-                            Relation(0L,"","",false))!!),
+                database.getRelationWithId(
+                        insert(Relation(0L,"","",false))!!),
                 relation::setValue)
         }
     }
 
+    fun onEditRelation(
+        relationNameText: String,
+        relationSynopsisText: String
+    ){
+        _enableSaveButton.value = !compareRelationAttributes(relationNameText, relationSynopsisText)
+    }
+
+    private fun compareRelationAttributes(
+        relationNameText: String,
+        relationSynopsisText: String
+    ): Boolean {
+        return(relationNameText == relation.value?.name
+                && relationSynopsisText == relation.value?.synopsis)
+    }
+
     fun onSave(name: String, synopsis: String){
-        // TODO: disable save if nothing has been changed
         // TODO: validate input
         Timber.i("Got name: " + name + " and synopsis: " + synopsis)
         uiScope.launch{
@@ -59,8 +75,7 @@ class RelationDetailViewModel (
             relation.value?.synopsis = synopsis
             update(relation.value)
         }
-        // TODO: if CREATEEDITRELATIONFRAGMENT is both for viewing and editing, then this will
-        // not be necessary upon simple saving
+        // TODO: this one should go away, need some sort of up button instead
         _navigateToRelationsList.value = true
     }
 
@@ -79,11 +94,23 @@ class RelationDetailViewModel (
         }
     }
 
+    private suspend fun delete(relation: Relation?){
+        if(relation != null){
+            withContext(Dispatchers.IO){
+                database.delete(relation)
+            }
+        }
+    }
+
     fun doneNavigating(){
         _navigateToRelationsList.value = false
     }
 
     fun onCancel(){
+        if(relationKey == null || relationKey == -1L)
+            uiScope.launch{
+                delete(relation.value)
+            }
         _navigateToRelationsList.value = true
     }
 

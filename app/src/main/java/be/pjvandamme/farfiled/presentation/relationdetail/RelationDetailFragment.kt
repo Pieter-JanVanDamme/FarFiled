@@ -10,10 +10,18 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
+import kotlinx.android.synthetic.main.activity_main.*
 
 import be.pjvandamme.farfiled.R
 import be.pjvandamme.farfiled.database.FarFiledDatabase
 import be.pjvandamme.farfiled.databinding.FragmentRelationDetailBinding
+import android.text.Editable
+import android.text.TextWatcher
+import android.widget.EditText
+import kotlinx.android.synthetic.main.fragment_relation_detail.*
+
+
+
 
 /**
  * A simple [Fragment] subclass.
@@ -58,6 +66,28 @@ class RelationDetailFragment : Fragment() {
 
         binding.setLifecycleOwner(this)
 
+        val textWatcher = object: TextWatcher{
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) { }
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) { }
+            override fun afterTextChanged(s: Editable?) {
+                relationDetailViewModel.onEditRelation(
+                    relationNameEditText.text.toString(),
+                    relationSynopsisEditText.text.toString()
+                )
+            }
+        }
+
+        binding.saveButton.isEnabled = false
+
+        binding.relationNameEditText.addTextChangedListener(textWatcher)
+        binding.relationSynopsisEditText.addTextChangedListener(textWatcher)
+
+        relationDetailViewModel.enableSaveButton.observe(this, Observer{enable ->
+            enable?.let{
+                binding.saveButton.isEnabled = enable
+            }
+        })
+
         relationDetailViewModel.navigateToRelationsList.observe(this, Observer{
             // It appears that this method gets called multiple times, possibly due to an issue
             // with the backstack that occurs when using the back button to make the keyboard on
@@ -74,6 +104,4 @@ class RelationDetailFragment : Fragment() {
 
         return binding.root
     }
-
-
 }
