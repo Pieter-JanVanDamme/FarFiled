@@ -11,6 +11,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 
 import be.pjvandamme.farfiled.R
@@ -41,8 +42,10 @@ class RelationsListFragment : Fragment() {
             false
         )
         binding.createRelationFloatingActionButton.setOnClickListener{ view: View ->
-            view.findNavController()
-                .navigate(R.id.action_relationsListFragment_to_relationDetailFragment)
+            Timber.i("Clicked!")
+            this.findNavController().navigate(
+                RelationsListFragmentDirections.actionRelationsListFragmentToRelationDetailFragment(-1L)
+            )
         }
 
         val application = requireNotNull(this.activity).application
@@ -58,10 +61,21 @@ class RelationsListFragment : Fragment() {
         binding.relationsListViewModel = relationsListViewModel
 
         val adapter = RelationsListAdapter(RelationsListListener { relationId ->
-            Timber.i("clicked " + relationId.toString())
+            relationsListViewModel.onRelationClicked(relationId)
         })
 
         binding.relationList.adapter = adapter
+
+        relationsListViewModel.navigateToRelationDetail.observe(viewLifecycleOwner, Observer{
+            relation ->
+                relation?.let{
+                    this.findNavController().navigate(
+                        RelationsListFragmentDirections
+                            .actionRelationsListFragmentToRelationDetailFragment(relation)
+                    )
+                    relationsListViewModel.onRelationDetailNavigated()
+                }
+        })
 
         relationsListViewModel.relations.observe(viewLifecycleOwner, Observer {
             it?.let{

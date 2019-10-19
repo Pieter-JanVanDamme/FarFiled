@@ -5,6 +5,7 @@ import android.provider.SyncStateContract.Helpers.insert
 import android.provider.SyncStateContract.Helpers.update
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import kotlinx.coroutines.*
 import be.pjvandamme.farfiled.database.RelationDao
@@ -19,31 +20,33 @@ class RelationDetailViewModel (
     private var viewModelJob = Job()
 
     private val uiScope = CoroutineScope(Dispatchers.Main + viewModelJob)
-    private var relation = MutableLiveData<Relation?>()
 
-    private var _navigateToRelationDetail = MutableLiveData<Boolean>()
-    val navigateToRelationDetail: LiveData<Boolean>
-        get() = _navigateToRelationDetail
+    private val relation = MediatorLiveData<Relation?>()
+    fun getRelation() = relation
 
     private var _navigateToRelationsList = MutableLiveData<Boolean>()
     val navigateToRelationsList: LiveData<Boolean>
         get() = _navigateToRelationsList
 
     init {
-        if(relationKey != null)
-            initializeRelation(relationKey)
+        initializeRelation()
     }
 
-    private fun initializeRelation(relationId: Long){
+    private fun initializeRelation(){
+        if(relationKey == null || relationKey == -1L)
+            initializeNewRelation()
+        else
+            relation.addSource(database.getRelationWithId(relationKey), relation::setValue)
+    }
+
+    private fun initializeNewRelation(){
         uiScope.launch{
-            relation.value = getRelationFromDatabase(relationId)
-        }
-    }
-
-    private suspend fun getRelationFromDatabase(relationId: Long): Relation?{
-        return withContext(Dispatchers.IO){
-            var relation = database.get(relationId)
-            relation
+            relation.addSource(
+                database
+                    .getRelationWithId(
+                        insert(
+                            Relation(0L,"","",false))!!),
+                relation::setValue)
         }
     }
 
@@ -51,27 +54,20 @@ class RelationDetailViewModel (
         // TODO: disable save if nothing has been changed
         // TODO: validate input
         Timber.i("Got name: " + name + " and synopsis: " + synopsis)
-        if(relationKey == null){
-            uiScope.launch{
-                relation.value = Relation(0, name, synopsis, false)
-                insert(relation.value!!)
-            }
-        }
-        else{
-            uiScope.launch{
-                relation.value?.name = name
-                relation.value?.synopsis = synopsis
-                update(relation.value)
-            }
+        uiScope.launch{
+            relation.value?.name = name
+            relation.value?.synopsis = synopsis
+            update(relation.value)
         }
         // TODO: if CREATEEDITRELATIONFRAGMENT is both for viewing and editing, then this will
         // not be necessary upon simple saving
         _navigateToRelationsList.value = true
     }
 
-    private suspend fun insert(newRelation: Relation){
-        withContext(Dispatchers.IO){
-            database.insert(newRelation)
+    private suspend fun insert(newRelation: Relation): Long?{
+        return withContext(Dispatchers.IO){
+            var relationId = database.insert(newRelation)
+            relationId
         }
     }
 
@@ -84,16 +80,11 @@ class RelationDetailViewModel (
     }
 
     fun doneNavigating(){
-        _navigateToRelationDetail.value = false
         _navigateToRelationsList.value = false
     }
 
     fun onCancel(){
-        if(relation != null){
-            _navigateToRelationDetail.value = true
-        }
-        else
-            _navigateToRelationsList.value = true
+        _navigateToRelationsList.value = true
     }
 
     override fun onCleared(){

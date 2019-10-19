@@ -2,6 +2,7 @@ package be.pjvandamme.farfiled.presentation.relationslist
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.MutableLiveData
 import be.pjvandamme.farfiled.database.RelationDao
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -15,6 +16,18 @@ class RelationsListViewModel(
     private val uiScope = CoroutineScope(Dispatchers.Main + viewModelJob)
 
     val relations = database.getAllRelations()
+
+    private val _navigateToRelationDetail = MutableLiveData<Long>()
+    val navigateToRelationDetail
+        get() = _navigateToRelationDetail
+
+    fun onRelationClicked(id: Long){
+        _navigateToRelationDetail.value = id
+    }
+
+    fun onRelationDetailNavigated(){
+        _navigateToRelationDetail.value = null
+    }
 
     override fun onCleared() {
         super.onCleared()

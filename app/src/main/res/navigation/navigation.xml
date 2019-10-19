@@ -22,5 +22,8 @@
         <action
             android:id="@+id/action_relationDetailFragment_to_relationsListFragment"
             app:destination="@id/relationsListFragment" />
+        <argument
+            android:name="relationId"
+            app:argType="long" />
     </fragment>
 </navigation>

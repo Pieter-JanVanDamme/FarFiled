@@ -38,12 +38,14 @@ class RelationDetailFragment : Fragment() {
 
         val application = requireNotNull(this.activity).application
 
+        val arguments = RelationDetailFragmentArgs.fromBundle(arguments!!)
+
         val dataSource = FarFiledDatabase.getInstance(application).relationDao
 
         // TODO: pass the relationId OR null, depending on what we get in the Bundle
         val viewModelFactory =
             RelationDetailViewModelFactory(
-                null,
+                arguments.relationId,
                 dataSource,
                 application
             )
