@@ -9,6 +9,7 @@ data class Relation(
     var relationId: Long = 0L,
     var name: String,
     var synopsis: String,
+    var avatarUrl: String?,
     var inFocus: Boolean
 
     // TODO: invent a way to keep track of a relation's relevancy

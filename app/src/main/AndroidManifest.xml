@@ -2,6 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="be.pjvandamme.farfiled">
 
+    <uses-permission
+        android:name="android.permission.INTERNET" />
+
     <application
         android:name=".FarFiledApplication"
         android:allowBackup="true"

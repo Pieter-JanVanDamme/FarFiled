@@ -1,12 +1,14 @@
 package be.pjvandamme.farfiled.domain
 
 import androidx.room.*
+import androidx.room.ForeignKey.CASCADE
 import be.pjvandamme.farfiled.database.util.Converters
 
 @Entity(tableName = "relation_life_area",
-    foreignKeys = [ForeignKey(entity = Relation::class,
-    parentColumns=["relationId"],
-    childColumns = ["relationId"])],
+    foreignKeys = [ForeignKey(onDelete = CASCADE,
+        entity = Relation::class,
+        parentColumns=["relationId"],
+        childColumns = ["relationId"])],
     indices = arrayOf(
         Index(value = *arrayOf("relationLifeAreaId", "relationId"))
     ))

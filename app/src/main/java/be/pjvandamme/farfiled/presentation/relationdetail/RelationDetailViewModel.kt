@@ -11,7 +11,11 @@ import be.pjvandamme.farfiled.database.RelationLifeAreaDao
 import be.pjvandamme.farfiled.domain.LifeArea
 import be.pjvandamme.farfiled.domain.Relation
 import be.pjvandamme.farfiled.domain.RelationLifeArea
-import timber.log.Timber
+import be.pjvandamme.farfiled.network.AdorableAvatarApi
+
+enum class AdorableAvatarStatus{
+    LOADING, ERROR, DONE
+}
 
 class RelationDetailViewModel (
     private val relationKey: Long?,
@@ -28,6 +32,10 @@ class RelationDetailViewModel (
 
     private val relationLifeAreas = MediatorLiveData<List<RelationLifeArea?>>()
     fun getRelationLifeAreas() = relationLifeAreas
+
+    private val _adorableAvatarString = MutableLiveData<String>()
+    val adorableAvatarString: LiveData<String>
+        get() = _adorableAvatarString
 
     private var _enableSaveButton = MutableLiveData<Boolean>()
     val enableSaveButton: LiveData<Boolean>
@@ -46,9 +54,12 @@ class RelationDetailViewModel (
     }
 
     private fun initializeRelation(){
-        if(relationKey == null || relationKey == -1L)
+        if(relationKey == null || relationKey == -1L) {
             initializeNewRelation()
+            getAdorableAvatarFacialFeatures()
+        }
         else {
+            retrieveAvatarUrl()
             relation.addSource(
                 relationDatabase.getRelationWithId(relationKey),
                 relation::setValue)
@@ -60,7 +71,7 @@ class RelationDetailViewModel (
 
     private fun initializeNewRelation(){
         uiScope.launch{
-            var relationId = insert(Relation(0L,"","",false))
+            var relationId = insert(Relation(0L,"","",null,false))
             initializeLifeAreasForRelation(relationId)
             relation.addSource(
                 relationDatabase.getRelationWithId(
@@ -80,6 +91,34 @@ class RelationDetailViewModel (
                     var relationLifeArea = RelationLifeArea(0L,relationId,it,"")
                     insert(relationLifeArea)
                 }
+            }
+        }
+    }
+
+    private fun retrieveAvatarUrl(){
+        // Retrieve Relation object separately, because we cannot observe the relation MediatorLiveData
+        // from inside the ViewModel... Thus we are never sure that we have a Relation object
+        // available from which to retrieve the URL
+        uiScope.launch{
+            var rel = get(relationKey!!)
+            _adorableAvatarString.value = rel?.avatarUrl
+        }
+    }
+
+    private fun getAdorableAvatarFacialFeatures(){
+        uiScope.launch{
+            var getFeaturesDeferred = AdorableAvatarApi.retrofitService.getFacialFeatures()
+            try{
+                var result = getFeaturesDeferred.await()
+                _adorableAvatarString.value = "https://api.adorable.io/avatars/face/" +
+                        result.features.eyes.shuffled().take(1)[0] + "/" +
+                        result.features.nose.shuffled().take(1)[0] + "/" +
+                        result.features.mouth.shuffled().take(1)[0] + "/" +
+                        result.features.COLOR_PALETTE.shuffled().take(1)[0]
+                relation.value?.avatarUrl = _adorableAvatarString.value
+            } catch(t:Throwable){
+                // ToDo: what if this fails?? -> Try again later!!
+                _adorableAvatarString.value = "Failure: " + t.message
             }
         }
     }
@@ -172,6 +211,13 @@ class RelationDetailViewModel (
             _showNameEmptySnackbar.value = true
     }
 
+    private suspend fun get(key: Long): Relation?{
+        return withContext(Dispatchers.IO){
+            var relation = relationDatabase.get(key)
+            relation
+        }
+    }
+
     private suspend fun insert(newRelation: Relation): Long?{
         return withContext(Dispatchers.IO){
             var relationId = relationDatabase.insert(newRelation)
@@ -219,14 +265,17 @@ class RelationDetailViewModel (
     }
 
     fun onCancel(){
-        if(relationKey == null || relationKey == -1L)
-            uiScope.launch{
+        // TODO: right now, relation isn't actually deleted...
+        if(relationKey == null || relationKey == -1L) {
+            uiScope.launch {
                 delete(relation.value)
             }
+        }
         _navigateToRelationsList.value = true
     }
 
     override fun onCleared(){
+        super.onCleared()
         viewModelJob.cancel()
     }
 }

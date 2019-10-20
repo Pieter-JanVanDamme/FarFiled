@@ -24,8 +24,6 @@ import timber.log.Timber
  */
 class RelationsListFragment : Fragment() {
 
-    // TODO: RECYCLERVIEW
-    // TODO: CLICKABLE VIEWS in RECYCLERVIEW
     // TODO: FILTER FOR RECYCLERVIEW
     // check https://stackoverflow.com/questions/30398247/how-to-filter-a-recyclerview-with-a-searchview
     // TODO: (if possible) GROUPS FOR RELATIONS
@@ -77,6 +75,8 @@ class RelationsListFragment : Fragment() {
                 }
         })
 
+        // Todo: BROKEN IMAGE when avatar not available etc.
+
         relationsListViewModel.relations.observe(viewLifecycleOwner, Observer {
             it?.let{
                 adapter.submitList(it)
@@ -86,8 +86,6 @@ class RelationsListFragment : Fragment() {
         binding.setLifecycleOwner(this)
 
         return binding.root
-
-        // TODO: ADD SAFE ARGS TO PASS RELATION OBJECT TO CREATEEDITRELATIONFRAGMENT
     }
 
 
