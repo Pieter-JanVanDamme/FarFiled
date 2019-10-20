@@ -7,7 +7,7 @@ import be.pjvandamme.farfiled.domain.RelationLifeArea
 @Dao
 interface RelationLifeAreaDao {
     @Insert
-    fun insert(relationLifeArea: RelationLifeArea)
+    fun insert(relationLifeArea: RelationLifeArea): Long?
 
     @Update
     fun update(relationLifeArea: RelationLifeArea)

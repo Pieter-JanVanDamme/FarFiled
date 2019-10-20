@@ -7,7 +7,7 @@ import be.pjvandamme.farfiled.domain.RelationLifeArea
 import be.pjvandamme.farfiled.database.util.Converters
 
 @Database(entities = [Relation::class, RelationLifeArea::class],
-    version = 2,
+    version = 4,
     exportSchema = false)
 @TypeConverters(Converters::class)
 abstract class FarFiledDatabase(): RoomDatabase() {

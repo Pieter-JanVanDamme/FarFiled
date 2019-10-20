@@ -1,20 +1,22 @@
 package be.pjvandamme.farfiled.presentation.relationdetail
 
 import android.app.Application
-import android.provider.SyncStateContract.Helpers.insert
-import android.provider.SyncStateContract.Helpers.update
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import kotlinx.coroutines.*
 import be.pjvandamme.farfiled.database.RelationDao
+import be.pjvandamme.farfiled.database.RelationLifeAreaDao
+import be.pjvandamme.farfiled.domain.LifeArea
 import be.pjvandamme.farfiled.domain.Relation
+import be.pjvandamme.farfiled.domain.RelationLifeArea
 import timber.log.Timber
 
 class RelationDetailViewModel (
     private val relationKey: Long?,
-    val database: RelationDao,
+    val relationDatabase: RelationDao,
+    val relationLifeAreaDatabase: RelationLifeAreaDao,
     application: Application
 ): AndroidViewModel(application){
     private var viewModelJob = Job()
@@ -24,9 +26,16 @@ class RelationDetailViewModel (
     private val relation = MediatorLiveData<Relation?>()
     fun getRelation() = relation
 
+    private val relationLifeAreas = MediatorLiveData<List<RelationLifeArea?>>()
+    fun getRelationLifeAreas() = relationLifeAreas
+
     private var _enableSaveButton = MutableLiveData<Boolean>()
     val enableSaveButton: LiveData<Boolean>
         get() = _enableSaveButton
+
+    private var _showNameEmptySnackbar = MutableLiveData<Boolean>()
+    val showNameEmptySnackbar: LiveData<Boolean>
+        get() = _showNameEmptySnackbar
 
     private var _navigateToRelationsList = MutableLiveData<Boolean>()
     val navigateToRelationsList: LiveData<Boolean>
@@ -39,57 +48,156 @@ class RelationDetailViewModel (
     private fun initializeRelation(){
         if(relationKey == null || relationKey == -1L)
             initializeNewRelation()
-        else
-            relation.addSource(database.getRelationWithId(relationKey), relation::setValue)
+        else {
+            relation.addSource(
+                relationDatabase.getRelationWithId(relationKey),
+                relation::setValue)
+            relationLifeAreas.addSource(
+                relationLifeAreaDatabase.getAllRelationLifeAreasForRelation(relationKey),
+                relationLifeAreas::setValue)
+        }
     }
 
     private fun initializeNewRelation(){
         uiScope.launch{
+            var relationId = insert(Relation(0L,"","",false))
+            initializeLifeAreasForRelation(relationId)
             relation.addSource(
-                database.getRelationWithId(
-                        insert(Relation(0L,"","",false))!!),
+                relationDatabase.getRelationWithId(
+                        relationId!!),
                 relation::setValue)
+            relationLifeAreas.addSource(
+                relationLifeAreaDatabase.getAllRelationLifeAreasForRelation(
+                    relationId!!),
+                relationLifeAreas::setValue)
+        }
+    }
+
+    private fun initializeLifeAreasForRelation(relationId: Long?){
+        if(relationId != null){
+            enumValues<LifeArea>().forEach {
+                uiScope.launch{
+                    var relationLifeArea = RelationLifeArea(0L,relationId,it,"")
+                    insert(relationLifeArea)
+                }
+            }
         }
     }
 
     fun onEditRelation(
         relationNameText: String,
-        relationSynopsisText: String
+        relationSynopsisText: String,
+        lifeAreaNowText: String,
+        lifeAreaSelfText: String,
+        lifeAreaWorkText: String,
+        lifeAreaHomeText: String,
+        lifeAreaCircleText: String,
+        lifeAreaFunText: String
     ){
-        _enableSaveButton.value = !compareRelationAttributes(relationNameText, relationSynopsisText)
+        _enableSaveButton.value = !compareRelationAttributes(
+            relationNameText,
+            relationSynopsisText,
+            lifeAreaNowText,
+            lifeAreaSelfText,
+            lifeAreaWorkText,
+            lifeAreaHomeText,
+            lifeAreaCircleText,
+            lifeAreaFunText
+        )
     }
 
     private fun compareRelationAttributes(
         relationNameText: String,
-        relationSynopsisText: String
+        relationSynopsisText: String,
+        lifeAreaNowText: String,
+        lifeAreaSelfText: String,
+        lifeAreaWorkText: String,
+        lifeAreaHomeText: String,
+        lifeAreaCircleText: String,
+        lifeAreaFunText: String
     ): Boolean {
-        return(relationNameText == relation.value?.name
-                && relationSynopsisText == relation.value?.synopsis)
+        var attributesEqual = true
+        relationLifeAreas.value?.forEach{
+            it?.let {
+                when (it.lifeArea) {
+                    LifeArea.EPHEMERA -> if(it.content != lifeAreaNowText) attributesEqual = false
+                    LifeArea.PERSONAL -> if(it.content != lifeAreaSelfText) attributesEqual = false
+                    LifeArea.VOCATION -> if (it.content != lifeAreaWorkText) attributesEqual = false
+                    LifeArea.DOMESTIC -> if(it.content != lifeAreaHomeText) attributesEqual = false
+                    LifeArea.COMMUNITY -> if(it.content != lifeAreaCircleText) attributesEqual = false
+                    LifeArea.LEISURE -> if(it.content != lifeAreaFunText) attributesEqual = false
+                }
+            }
+        }
+        if( relationNameText != relation.value?.name)
+            attributesEqual = false
+        if(relationSynopsisText != relation.value?.synopsis)
+            attributesEqual = false
+        return attributesEqual
     }
 
-    fun onSave(name: String, synopsis: String){
-        // TODO: validate input
-        Timber.i("Got name: " + name + " and synopsis: " + synopsis)
-        uiScope.launch{
-            relation.value?.name = name
-            relation.value?.synopsis = synopsis
-            update(relation.value)
+    fun onSave(
+        name: String,
+        synopsis: String,
+        nowLA: String,
+        selfLA: String,
+        workLA: String,
+        homeLA: String,
+        circleLA: String,
+        funLA: String
+    ){
+        if(!name.isNullOrEmpty()) {
+            uiScope.launch {
+                relation.value?.name = name
+                relation.value?.synopsis = synopsis
+                update(relation.value)
+                relationLifeAreas.value?.forEach {
+                    it?.let {
+                        when (it.lifeArea) {
+                            LifeArea.EPHEMERA -> it.content = nowLA
+                            LifeArea.PERSONAL -> it.content = selfLA
+                            LifeArea.VOCATION -> it.content = workLA
+                            LifeArea.DOMESTIC -> it.content = homeLA
+                            LifeArea.COMMUNITY -> it.content = circleLA
+                            LifeArea.LEISURE -> it.content = funLA
+                        }
+                        update(it)
+                    }
+                }
+            }
+            // TODO: this one should go away, need some sort of up button instead
+            _navigateToRelationsList.value = true
         }
-        // TODO: this one should go away, need some sort of up button instead
-        _navigateToRelationsList.value = true
+        else
+            _showNameEmptySnackbar.value = true
     }
 
     private suspend fun insert(newRelation: Relation): Long?{
         return withContext(Dispatchers.IO){
-            var relationId = database.insert(newRelation)
+            var relationId = relationDatabase.insert(newRelation)
             relationId
+        }
+    }
+
+    private suspend fun insert(newRelationLifeArea: RelationLifeArea): Long?{
+        return withContext(Dispatchers.IO){
+            var relationLifeAreaId = relationLifeAreaDatabase.insert(newRelationLifeArea)
+            relationLifeAreaId
         }
     }
 
     private suspend fun update(relation: Relation?){
         if(relation != null) {
             withContext(Dispatchers.IO) {
-                database.update(relation)
+                relationDatabase.update(relation)
+            }
+        }
+    }
+
+    private suspend fun update(relationLifeArea: RelationLifeArea?){
+        relationLifeArea?.let{
+            withContext(Dispatchers.IO){
+                relationLifeAreaDatabase.update(it)
             }
         }
     }
@@ -97,9 +205,13 @@ class RelationDetailViewModel (
     private suspend fun delete(relation: Relation?){
         if(relation != null){
             withContext(Dispatchers.IO){
-                database.delete(relation)
+                relationDatabase.delete(relation)
             }
         }
+    }
+
+    fun doneShowingNameEmptySnackbar(){
+        _showNameEmptySnackbar.value = false
     }
 
     fun doneNavigating(){
