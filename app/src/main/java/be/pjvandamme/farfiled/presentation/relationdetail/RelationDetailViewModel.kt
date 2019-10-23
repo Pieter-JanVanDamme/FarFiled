@@ -13,10 +13,6 @@ import be.pjvandamme.farfiled.domain.Relation
 import be.pjvandamme.farfiled.domain.RelationLifeArea
 import be.pjvandamme.farfiled.network.AdorableAvatarApi
 
-enum class AdorableAvatarStatus{
-    LOADING, ERROR, DONE
-}
-
 class RelationDetailViewModel (
     private val relationKey: Long?,
     val relationDatabase: RelationDao,
@@ -101,7 +97,15 @@ class RelationDetailViewModel (
         // available from which to retrieve the URL
         uiScope.launch{
             var rel = get(relationKey!!)
-            _adorableAvatarString.value = rel?.avatarUrl
+            var avatarUrl = rel?.avatarUrl
+            // if the Relation has no avatar, that means there was a network issue upon creating
+            // the Relation -- in that case, we'll give him one now.
+            if (avatarUrl.isNullOrEmpty()){
+                getAdorableAvatarFacialFeatures()
+                _enableSaveButton.value = true
+            }
+            else
+                _adorableAvatarString.value = rel?.avatarUrl
         }
     }
 
