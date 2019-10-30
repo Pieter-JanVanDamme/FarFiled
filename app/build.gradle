@@ -8,6 +8,8 @@ apply plugin: 'kotlin-kapt'
 
 apply plugin: 'androidx.navigation.safeargs'
 
+apply plugin: 'kotlinx-serialization'
+
 android {
     compileSdkVersion 28
     defaultConfig {
@@ -26,6 +28,9 @@ android {
     }
     dataBinding {
         enabled = true
+    }
+    androidExtensions{
+        experimental = true
     }
 }
 
@@ -53,7 +58,12 @@ dependencies {
     // Room relationDatabase
     implementation "androidx.room:room-runtime:$version_room"
     kapt "androidx.room:room-compiler:$version_room"
+
+    // lifecycle
     implementation "androidx.lifecycle:lifecycle-extensions:$version_lifecycle_extensions"
+    kapt "androidx.lifecycle:lifecycle-compiler:$version_lifecycle_compiler"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-savedstate:$version_savedstate"
+    implementation "androidx.activity:activity-ktx:$version_activity_ktx"
 
     // Coroutines
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$version_coroutine"
@@ -63,7 +73,6 @@ dependencies {
     implementation "com.squareup.retrofit2:retrofit:$version_retrofit"
     implementation "com.jakewharton.retrofit:retrofit2-kotlin-coroutines-adapter:$version_retrofit_coroutines_adapter"
 
-
     // Moshi
     implementation "com.squareup.moshi:moshi:$version_moshi"
     implementation "com.squareup.moshi:moshi-kotlin:$version_moshi"
@@ -71,4 +80,7 @@ dependencies {
 
     // Glide
     implementation "com.github.bumptech.glide:glide:$version_glide"
+
+    // Serializable
+    implementation "org.jetbrains.kotlinx:kotlinx-serialization-runtime:$version_serialization"
 }

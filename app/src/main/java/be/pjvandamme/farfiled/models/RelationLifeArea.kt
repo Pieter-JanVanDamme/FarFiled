@@ -1,4 +1,4 @@
-package be.pjvandamme.farfiled.domain
+package be.pjvandamme.farfiled.models
 
 import androidx.room.*
 import androidx.room.ForeignKey.CASCADE

@@ -2,6 +2,7 @@ package be.pjvandamme.farfiled.presentation.relationdetail
 
 
 import android.os.Bundle
+import android.os.Parcelable
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -16,7 +17,9 @@ import be.pjvandamme.farfiled.database.FarFiledDatabase
 import be.pjvandamme.farfiled.databinding.FragmentRelationDetailBinding
 import android.text.Editable
 import android.text.TextWatcher
+import android.widget.EditText
 import android.widget.LinearLayout
+import be.pjvandamme.farfiled.models.LifeArea
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.fragment_relation_detail.*
 
@@ -25,6 +28,16 @@ import kotlinx.android.synthetic.main.fragment_relation_detail.*
  * A simple [Fragment] subclass.
  */
 class RelationDetailFragment : Fragment() {
+
+//    var editRelation: EditRelationParcelable? = null
+
+//    override fun onActivityCreated(savedInstanceState: Bundle?) {
+//        super.onActivityCreated(savedInstanceState)
+//        if(savedInstanceState != null){
+//            editRelation = savedInstanceState
+//                .getParcelable<EditRelationParcelable>("editRelation")
+//        }
+//    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -46,7 +59,6 @@ class RelationDetailFragment : Fragment() {
 
         val relationLifeAreaDataSource = FarFiledDatabase.getInstance(application).relationLifeAreaDao
 
-        // TODO: pass the relationId OR null, depending on what we get in the Bundle
         val viewModelFactory =
             RelationDetailViewModelFactory(
                 arguments.relationId,
@@ -86,33 +98,44 @@ class RelationDetailFragment : Fragment() {
             }
         }
 
-        val textWatcher = object: TextWatcher{
+        class RelationEditTextWatcher(var relationDetailEditText: RelationDetailEditText)
+                : TextWatcher{
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) { }
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) { }
             override fun afterTextChanged(s: Editable?) {
                 relationDetailViewModel.onEditRelation(
-                    relationNameEditText.text.toString(),
-                    relationSynopsisEditText.text.toString(),
-                    lifeAreaNowEditText.text.toString(),
-                    lifeAreaSelfEditText.text.toString(),
-                    lifeAreaWorkEditText.text.toString(),
-                    lifeAreaHomeEditText.text.toString(),
-                    lifeAreaCircleEditText.text.toString(),
-                    lifeAreaFunEditText.text.toString()
+                    s.toString(),
+                    relationDetailEditText
                 )
             }
         }
 
         binding.saveButton.isEnabled = false
 
-        binding.relationNameEditText.addTextChangedListener(textWatcher)
-        binding.relationSynopsisEditText.addTextChangedListener(textWatcher)
-        binding.lifeAreaNowEditText.addTextChangedListener(textWatcher)
-        binding.lifeAreaSelfEditText.addTextChangedListener(textWatcher)
-        binding.lifeAreaWorkEditText.addTextChangedListener(textWatcher)
-        binding.lifeAreaHomeEditText.addTextChangedListener(textWatcher)
-        binding.lifeAreaCircleEditText.addTextChangedListener(textWatcher)
-        binding.lifeAreaFunEditText.addTextChangedListener(textWatcher)
+//        binding.relationNameEditText.addTextChangedListener(textWatcher)
+//        binding.relationSynopsisEditText.addTextChangedListener(textWatcher)
+//        binding.lifeAreaNowEditText.addTextChangedListener(textWatcher)
+//        binding.lifeAreaSelfEditText.addTextChangedListener(textWatcher)
+//        binding.lifeAreaWorkEditText.addTextChangedListener(textWatcher)
+//        binding.lifeAreaHomeEditText.addTextChangedListener(textWatcher)
+//        binding.lifeAreaCircleEditText.addTextChangedListener(textWatcher)
+//        binding.lifeAreaFunEditText.addTextChangedListener(textWatcher)
+        binding.relationNameEditText.addTextChangedListener(
+            RelationEditTextWatcher(RelationDetailEditText.NAME))
+        binding.relationSynopsisEditText.addTextChangedListener(
+            RelationEditTextWatcher(RelationDetailEditText.SYNOPSIS))
+        binding.lifeAreaNowEditText.addTextChangedListener(
+            RelationEditTextWatcher(RelationDetailEditText.EPHEMERA))
+        binding.lifeAreaSelfEditText.addTextChangedListener(
+            RelationEditTextWatcher(RelationDetailEditText.PERSONAL))
+        binding.lifeAreaWorkEditText.addTextChangedListener(
+            RelationEditTextWatcher(RelationDetailEditText.VOCATION))
+        binding.lifeAreaHomeEditText.addTextChangedListener(
+            RelationEditTextWatcher(RelationDetailEditText.DOMESTIC))
+        binding.lifeAreaCircleEditText.addTextChangedListener(
+            RelationEditTextWatcher(RelationDetailEditText.COMMUNITY))
+        binding.lifeAreaFunEditText.addTextChangedListener(
+            RelationEditTextWatcher(RelationDetailEditText.LEISURE))
 
         relationDetailViewModel.enableSaveButton.observe(this, Observer{enable ->
             enable?.let{
@@ -148,6 +171,21 @@ class RelationDetailFragment : Fragment() {
 
         return binding.root
     }
+
+//    override fun onSaveInstanceState(outState: Bundle) {
+//        super.onSaveInstanceState(outState)
+//        var editRelation = EditRelationParcelable(
+//            relationNameEditText.text.toString(),
+//            relationSynopsisEditText.text.toString(),
+//            lifeAreaNowEditText.text.toString(),
+//            lifeAreaSelfEditText.text.toString(),
+//            lifeAreaWorkEditText.text.toString(),
+//            lifeAreaHomeEditText.text.toString(),
+//            lifeAreaCircleEditText.text.toString(),
+//            lifeAreaFunEditText.text.toString()
+//        )
+//        outState.putParcelable("editRelation", editRelation)
+//    }
 
     private fun hideLifeAreasLayoutsExcept(visibleLayout: LinearLayout?,
                                            allLayouts: List<LinearLayout>

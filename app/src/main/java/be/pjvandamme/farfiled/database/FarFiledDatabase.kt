@@ -2,12 +2,12 @@ package be.pjvandamme.farfiled.database
 
 import android.content.Context
 import androidx.room.*
-import be.pjvandamme.farfiled.domain.Relation
-import be.pjvandamme.farfiled.domain.RelationLifeArea
+import be.pjvandamme.farfiled.models.Relation
+import be.pjvandamme.farfiled.models.RelationLifeArea
 import be.pjvandamme.farfiled.database.util.Converters
 
 @Database(entities = [Relation::class, RelationLifeArea::class],
-    version = 6,
+    version = 7,
     exportSchema = false)
 @TypeConverters(Converters::class)
 abstract class FarFiledDatabase(): RoomDatabase() {

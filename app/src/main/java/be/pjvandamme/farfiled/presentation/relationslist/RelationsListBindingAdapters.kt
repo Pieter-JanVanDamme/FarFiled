@@ -2,7 +2,7 @@ package be.pjvandamme.farfiled.presentation.relationslist
 
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
-import be.pjvandamme.farfiled.domain.Relation
+import be.pjvandamme.farfiled.models.Relation
 
 @BindingAdapter("relationName")
 fun TextView.setRelationName(item: Relation?){

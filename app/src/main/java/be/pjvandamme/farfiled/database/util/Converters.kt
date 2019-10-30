@@ -1,7 +1,7 @@
 package be.pjvandamme.farfiled.database.util
 
 import androidx.room.TypeConverter
-import be.pjvandamme.farfiled.domain.LifeArea
+import be.pjvandamme.farfiled.models.LifeArea
 
 class Converters{
 

@@ -1,4 +1,4 @@
-package be.pjvandamme.farfiled.domain
+package be.pjvandamme.farfiled.models
 
 enum class LifeArea(
     val title: String,
@@ -6,6 +6,13 @@ enum class LifeArea(
     val detailedDescription: String,
     val sequenceNumber: Int
 ){
+//    SYNOPSIS(
+//        "summary",
+//        "short description",
+//        "short description of this relation, usually including their primary " +
+//                "role(s) in life, their value to the user, and perhaps a context or memory aid",
+//        -1
+//    ),
     EPHEMERA(
         "now",
         "currently relevant topics",

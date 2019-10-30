@@ -6,7 +6,7 @@
     <data>
         <variable
             name="relation"
-            type="be.pjvandamme.farfiled.domain.Relation" />
+            type="be.pjvandamme.farfiled.models.Relation" />
         <variable
             name="clickListener"
             type="be.pjvandamme.farfiled.presentation.relationslist.RelationsListListener" />

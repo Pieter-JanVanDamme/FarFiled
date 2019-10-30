@@ -1,6 +1,7 @@
 package be.pjvandamme.farfiled.presentation.relationdetail
 
 import android.app.Application
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import be.pjvandamme.farfiled.database.RelationDao

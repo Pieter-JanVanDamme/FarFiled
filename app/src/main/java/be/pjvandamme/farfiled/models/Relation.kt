@@ -1,4 +1,4 @@
-package be.pjvandamme.farfiled.domain
+package be.pjvandamme.farfiled.models
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
@@ -9,8 +9,7 @@ data class Relation(
     var relationId: Long = 0L,
     var name: String,
     var synopsis: String,
-    var avatarUrl: String?,
-    var inFocus: Boolean
+    var avatarUrl: String?
 
     // TODO: invent a way to keep track of a relation's relevancy
     // simple idea: subtract relevancy points on a daily basis, add relevancy points

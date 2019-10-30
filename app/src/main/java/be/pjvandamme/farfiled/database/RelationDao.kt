@@ -2,7 +2,7 @@ package be.pjvandamme.farfiled.database
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
-import be.pjvandamme.farfiled.domain.Relation
+import be.pjvandamme.farfiled.models.Relation
 
 @Dao
 interface RelationDao{
@@ -18,7 +18,7 @@ interface RelationDao{
     @Query("SELECT * FROM relation WHERE relationId = :id")
     fun getRelationWithId(id: Long): LiveData<Relation>
 
-    @Query("SELECT * from relation ORDER BY inFocus DESC, relationId ASC")
+    @Query("SELECT * from relation ORDER BY relationId ASC")
     fun getAllRelations(): LiveData<List<Relation>>
 
     @Delete

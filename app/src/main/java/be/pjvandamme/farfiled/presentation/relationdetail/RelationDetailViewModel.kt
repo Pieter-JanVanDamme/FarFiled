@@ -1,24 +1,36 @@
 package be.pjvandamme.farfiled.presentation.relationdetail
 
 import android.app.Application
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MediatorLiveData
-import androidx.lifecycle.MutableLiveData
+import android.text.Editable
+import android.text.TextWatcher
+import androidx.lifecycle.*
 import kotlinx.coroutines.*
 import be.pjvandamme.farfiled.database.RelationDao
 import be.pjvandamme.farfiled.database.RelationLifeAreaDao
-import be.pjvandamme.farfiled.domain.LifeArea
-import be.pjvandamme.farfiled.domain.Relation
-import be.pjvandamme.farfiled.domain.RelationLifeArea
+import be.pjvandamme.farfiled.models.LifeArea
+import be.pjvandamme.farfiled.models.Relation
+import be.pjvandamme.farfiled.models.RelationLifeArea
 import be.pjvandamme.farfiled.network.AdorableAvatarApi
+import kotlinx.android.synthetic.main.fragment_relation_detail.*
+import timber.log.Timber
+
+enum class RelationDetailEditText(val lifeArea: LifeArea?) {
+    NAME(null),
+    SYNOPSIS(null),
+    EPHEMERA(LifeArea.EPHEMERA),
+    PERSONAL(LifeArea.PERSONAL),
+    VOCATION(LifeArea.VOCATION),
+    DOMESTIC(LifeArea.DOMESTIC),
+    COMMUNITY(LifeArea.COMMUNITY),
+    LEISURE(LifeArea.LEISURE)
+}
 
 class RelationDetailViewModel (
     private val relationKey: Long?,
     val relationDatabase: RelationDao,
     val relationLifeAreaDatabase: RelationLifeAreaDao,
     application: Application
-): AndroidViewModel(application){
+): AndroidViewModel(application) {
     private var viewModelJob = Job()
 
     private val uiScope = CoroutineScope(Dispatchers.Main + viewModelJob)
@@ -26,8 +38,14 @@ class RelationDetailViewModel (
     private val relation = MediatorLiveData<Relation?>()
     fun getRelation() = relation
 
+    private val relationEdited = MediatorLiveData<Relation?>()
+    fun getRelationEdited() = relationEdited
+
     private val relationLifeAreas = MediatorLiveData<List<RelationLifeArea?>>()
     fun getRelationLifeAreas() = relationLifeAreas
+
+    private val relationLifeAreasEdited = MediatorLiveData<List<RelationLifeArea?>>()
+    fun getRelationLifeAreasEdited() = relationLifeAreasEdited
 
     private val _adorableAvatarString = MutableLiveData<String>()
     val adorableAvatarString: LiveData<String>
@@ -62,12 +80,20 @@ class RelationDetailViewModel (
             relationLifeAreas.addSource(
                 relationLifeAreaDatabase.getAllRelationLifeAreasForRelation(relationKey),
                 relationLifeAreas::setValue)
+            relationEdited.addSource(
+                relation,
+                relationEdited::setValue
+            )
+            relationLifeAreasEdited.addSource(
+                relationLifeAreas,
+                relationLifeAreasEdited::setValue
+            )
         }
     }
 
     private fun initializeNewRelation(){
         uiScope.launch{
-            var relationId = insert(Relation(0L,"","",null,false))
+            var relationId = insert(Relation(0L,"","",null))
             initializeLifeAreasForRelation(relationId)
             relation.addSource(
                 relationDatabase.getRelationWithId(
@@ -77,6 +103,14 @@ class RelationDetailViewModel (
                 relationLifeAreaDatabase.getAllRelationLifeAreasForRelation(
                     relationId!!),
                 relationLifeAreas::setValue)
+            relationEdited.addSource(
+                relation,
+                relationEdited::setValue
+            )
+            relationLifeAreasEdited.addSource(
+                relationLifeAreas,
+                relationLifeAreasEdited::setValue
+            )
         }
     }
 
@@ -121,94 +155,50 @@ class RelationDetailViewModel (
                         result.features.COLOR_PALETTE.shuffled().take(1)[0]
                 relation.value?.avatarUrl = _adorableAvatarString.value
             } catch(t:Throwable){
-                // ToDo: what if this fails?? -> Try again later!!
                 _adorableAvatarString.value = "Failure: " + t.message
             }
         }
     }
 
-    fun onEditRelation(
-        relationNameText: String,
-        relationSynopsisText: String,
-        lifeAreaNowText: String,
-        lifeAreaSelfText: String,
-        lifeAreaWorkText: String,
-        lifeAreaHomeText: String,
-        lifeAreaCircleText: String,
-        lifeAreaFunText: String
-    ){
-        _enableSaveButton.value = !compareRelationAttributes(
-            relationNameText,
-            relationSynopsisText,
-            lifeAreaNowText,
-            lifeAreaSelfText,
-            lifeAreaWorkText,
-            lifeAreaHomeText,
-            lifeAreaCircleText,
-            lifeAreaFunText
-        )
-    }
-
-    private fun compareRelationAttributes(
-        relationNameText: String,
-        relationSynopsisText: String,
-        lifeAreaNowText: String,
-        lifeAreaSelfText: String,
-        lifeAreaWorkText: String,
-        lifeAreaHomeText: String,
-        lifeAreaCircleText: String,
-        lifeAreaFunText: String
-    ): Boolean {
-        var attributesEqual = true
-        relationLifeAreas.value?.forEach{
-            it?.let {
-                when (it.lifeArea) {
-                    LifeArea.EPHEMERA -> if(it.content != lifeAreaNowText) attributesEqual = false
-                    LifeArea.PERSONAL -> if(it.content != lifeAreaSelfText) attributesEqual = false
-                    LifeArea.VOCATION -> if (it.content != lifeAreaWorkText) attributesEqual = false
-                    LifeArea.DOMESTIC -> if(it.content != lifeAreaHomeText) attributesEqual = false
-                    LifeArea.COMMUNITY -> if(it.content != lifeAreaCircleText) attributesEqual = false
-                    LifeArea.LEISURE -> if(it.content != lifeAreaFunText) attributesEqual = false
-                }
-            }
+    // TODO: model updaten, eventueel ook reeds persisteren, zodat bij orientatiewijzigingen
+    // alles blijft staan
+    fun onEditRelation(changedText: String, relationDetailEditText: RelationDetailEditText){
+        Timber.i("Received \"" + changedText + "\" from " + relationDetailEditText.toString())
+        _enableSaveButton.value = !compareRelationAttributes(changedText, relationDetailEditText)
+        when(relationDetailEditText){
+            RelationDetailEditText.NAME -> relationEdited.value?.name = changedText
+            RelationDetailEditText.SYNOPSIS -> relationEdited.value?.synopsis = changedText
+            else -> (relationLifeAreas?.value?.singleOrNull{
+                it?.lifeArea == relationDetailEditText.lifeArea})?.content = changedText
         }
-        if( relationNameText != relation.value?.name)
-            attributesEqual = false
-        if(relationSynopsisText != relation.value?.synopsis)
-            attributesEqual = false
-        return attributesEqual
     }
 
-    fun onSave(
-        name: String,
-        synopsis: String,
-        nowLA: String,
-        selfLA: String,
-        workLA: String,
-        homeLA: String,
-        circleLA: String,
-        funLA: String
-    ){
-        if(!name.isNullOrEmpty()) {
+    private fun compareRelationAttributes(changedText: String,
+                                          relationDetailEditText: RelationDetailEditText)
+            : Boolean {
+        when(relationDetailEditText){
+            RelationDetailEditText.NAME -> return relation.value?.name == changedText
+            RelationDetailEditText.SYNOPSIS -> return relation.value?.synopsis == changedText
+            else -> return (relationLifeAreasEdited?.value?.singleOrNull{
+                it?.lifeArea == relationDetailEditText.lifeArea})?.content == changedText
+        }
+        return true
+    }
+
+    fun onSave(){
+        if(!relationEdited.value?.name.isNullOrEmpty()) {
             uiScope.launch {
-                relation.value?.name = name
-                relation.value?.synopsis = synopsis
+                relation.value?.name = relationEdited.value?.name ?: ""
+                relation.value?.synopsis = relationEdited.value?.synopsis ?: ""
                 update(relation.value)
                 relationLifeAreas.value?.forEach {
                     it?.let {
-                        when (it.lifeArea) {
-                            LifeArea.EPHEMERA -> it.content = nowLA
-                            LifeArea.PERSONAL -> it.content = selfLA
-                            LifeArea.VOCATION -> it.content = workLA
-                            LifeArea.DOMESTIC -> it.content = homeLA
-                            LifeArea.COMMUNITY -> it.content = circleLA
-                            LifeArea.LEISURE -> it.content = funLA
-                        }
+                        it.content = (relationLifeAreasEdited?.value?.singleOrNull{ copy ->
+                            it.lifeArea == copy?.lifeArea})?.content ?: ""
                         update(it)
                     }
                 }
             }
-            // TODO: this one should go away, need some sort of up button instead
             _navigateToRelationsList.value = true
         }
         else
@@ -269,7 +259,6 @@ class RelationDetailViewModel (
     }
 
     fun onCancel(){
-        // TODO: right now, relation isn't actually deleted...
         if(relationKey == null || relationKey == -1L) {
             uiScope.launch {
                 delete(relation.value)

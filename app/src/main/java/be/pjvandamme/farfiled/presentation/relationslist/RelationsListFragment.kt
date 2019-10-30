@@ -26,7 +26,6 @@ class RelationsListFragment : Fragment() {
 
     // TODO: FILTER FOR RECYCLERVIEW
     // check https://stackoverflow.com/questions/30398247/how-to-filter-a-recyclerview-with-a-searchview
-    // TODO: (if possible) GROUPS FOR RELATIONS
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
