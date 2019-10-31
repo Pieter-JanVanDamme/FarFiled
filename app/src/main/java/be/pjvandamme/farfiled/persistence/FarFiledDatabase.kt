@@ -1,10 +1,12 @@
-package be.pjvandamme.farfiled.database
+package be.pjvandamme.farfiled.persistence
 
 import android.content.Context
 import androidx.room.*
-import be.pjvandamme.farfiled.models.Relation
-import be.pjvandamme.farfiled.models.RelationLifeArea
-import be.pjvandamme.farfiled.database.util.Converters
+import be.pjvandamme.farfiled.dao.RelationDao
+import be.pjvandamme.farfiled.dao.RelationLifeAreaDao
+import be.pjvandamme.farfiled.model.Relation
+import be.pjvandamme.farfiled.model.RelationLifeArea
+import be.pjvandamme.farfiled.util.Converters
 
 @Database(entities = [Relation::class, RelationLifeArea::class],
     version = 7,

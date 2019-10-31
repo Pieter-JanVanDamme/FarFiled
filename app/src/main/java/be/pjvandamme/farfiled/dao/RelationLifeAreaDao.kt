@@ -1,8 +1,8 @@
-package be.pjvandamme.farfiled.database
+package be.pjvandamme.farfiled.dao
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
-import be.pjvandamme.farfiled.models.RelationLifeArea
+import be.pjvandamme.farfiled.model.RelationLifeArea
 
 @Dao
 interface RelationLifeAreaDao {

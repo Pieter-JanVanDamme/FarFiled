@@ -1,8 +1,7 @@
-package be.pjvandamme.farfiled.presentation.relationdetail
+package be.pjvandamme.farfiled.fragment
 
 
 import android.os.Bundle
-import android.os.Parcelable
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -13,13 +12,14 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
 
 import be.pjvandamme.farfiled.R
-import be.pjvandamme.farfiled.database.FarFiledDatabase
+import be.pjvandamme.farfiled.persistence.FarFiledDatabase
 import be.pjvandamme.farfiled.databinding.FragmentRelationDetailBinding
 import android.text.Editable
 import android.text.TextWatcher
-import android.widget.EditText
 import android.widget.LinearLayout
-import be.pjvandamme.farfiled.models.LifeArea
+import be.pjvandamme.farfiled.ui.RelationDetailViewModelFactory
+import be.pjvandamme.farfiled.ui.RelationDetailEditText
+import be.pjvandamme.farfiled.ui.RelationDetailViewModel
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.fragment_relation_detail.*
 
@@ -53,7 +53,10 @@ class RelationDetailFragment : Fragment() {
 
         val application = requireNotNull(this.activity).application
 
-        val arguments = RelationDetailFragmentArgs.fromBundle(arguments!!)
+        val arguments =
+            RelationDetailFragmentArgs.fromBundle(
+                arguments!!
+            )
 
         val relationDataSource = FarFiledDatabase.getInstance(application).relationDao
 

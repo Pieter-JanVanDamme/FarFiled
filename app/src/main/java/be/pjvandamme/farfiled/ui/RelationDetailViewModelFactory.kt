@@ -1,11 +1,10 @@
-package be.pjvandamme.farfiled.presentation.relationdetail
+package be.pjvandamme.farfiled.ui
 
 import android.app.Application
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import be.pjvandamme.farfiled.database.RelationDao
-import be.pjvandamme.farfiled.database.RelationLifeAreaDao
+import be.pjvandamme.farfiled.dao.RelationDao
+import be.pjvandamme.farfiled.dao.RelationLifeAreaDao
 import java.lang.IllegalArgumentException
 
 class RelationDetailViewModelFactory(

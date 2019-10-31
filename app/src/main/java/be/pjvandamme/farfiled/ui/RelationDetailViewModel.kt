@@ -1,17 +1,14 @@
-package be.pjvandamme.farfiled.presentation.relationdetail
+package be.pjvandamme.farfiled.ui
 
 import android.app.Application
-import android.text.Editable
-import android.text.TextWatcher
 import androidx.lifecycle.*
 import kotlinx.coroutines.*
-import be.pjvandamme.farfiled.database.RelationDao
-import be.pjvandamme.farfiled.database.RelationLifeAreaDao
-import be.pjvandamme.farfiled.models.LifeArea
-import be.pjvandamme.farfiled.models.Relation
-import be.pjvandamme.farfiled.models.RelationLifeArea
+import be.pjvandamme.farfiled.dao.RelationDao
+import be.pjvandamme.farfiled.dao.RelationLifeAreaDao
+import be.pjvandamme.farfiled.model.LifeArea
+import be.pjvandamme.farfiled.model.Relation
+import be.pjvandamme.farfiled.model.RelationLifeArea
 import be.pjvandamme.farfiled.network.AdorableAvatarApi
-import kotlinx.android.synthetic.main.fragment_relation_detail.*
 import timber.log.Timber
 
 enum class RelationDetailEditText(val lifeArea: LifeArea?) {
@@ -160,8 +157,6 @@ class RelationDetailViewModel (
         }
     }
 
-    // TODO: model updaten, eventueel ook reeds persisteren, zodat bij orientatiewijzigingen
-    // alles blijft staan
     fun onEditRelation(changedText: String, relationDetailEditText: RelationDetailEditText){
         Timber.i("Received \"" + changedText + "\" from " + relationDetailEditText.toString())
         _enableSaveButton.value = !compareRelationAttributes(changedText, relationDetailEditText)
@@ -174,7 +169,8 @@ class RelationDetailViewModel (
     }
 
     private fun compareRelationAttributes(changedText: String,
-                                          relationDetailEditText: RelationDetailEditText)
+                                          relationDetailEditText: RelationDetailEditText
+    )
             : Boolean {
         when(relationDetailEditText){
             RelationDetailEditText.NAME -> return relation.value?.name == changedText

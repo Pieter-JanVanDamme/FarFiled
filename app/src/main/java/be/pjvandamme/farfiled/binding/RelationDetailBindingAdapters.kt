@@ -1,18 +1,14 @@
-package be.pjvandamme.farfiled.presentation.relationdetail
+package be.pjvandamme.farfiled.binding
 
-import android.text.Editable
-import android.text.TextWatcher
-import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.net.toUri
 import androidx.databinding.BindingAdapter
 import be.pjvandamme.farfiled.R
-import be.pjvandamme.farfiled.models.LifeArea
-import be.pjvandamme.farfiled.models.RelationLifeArea
+import be.pjvandamme.farfiled.model.LifeArea
+import be.pjvandamme.farfiled.model.RelationLifeArea
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
-import kotlinx.android.synthetic.main.fragment_relation_detail.*
 
 @BindingAdapter("relationLifeAreaNow")
 fun TextView.setLifeAreaNowText(item: List<RelationLifeArea?>?){

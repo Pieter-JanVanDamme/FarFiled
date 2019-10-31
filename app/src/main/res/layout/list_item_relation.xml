@@ -6,10 +6,10 @@
     <data>
         <variable
             name="relation"
-            type="be.pjvandamme.farfiled.models.Relation" />
+            type="be.pjvandamme.farfiled.model.Relation" />
         <variable
             name="clickListener"
-            type="be.pjvandamme.farfiled.presentation.relationslist.RelationsListListener" />
+            type="be.pjvandamme.farfiled.adapter.RelationsListListener" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

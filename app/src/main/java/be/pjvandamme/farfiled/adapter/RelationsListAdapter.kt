@@ -1,4 +1,4 @@
-package be.pjvandamme.farfiled.presentation.relationslist
+package be.pjvandamme.farfiled.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import be.pjvandamme.farfiled.databinding.ListItemRelationBinding
-import be.pjvandamme.farfiled.models.Relation
+import be.pjvandamme.farfiled.model.Relation
 
 class RelationsListAdapter(val clickListener: RelationsListListener):
         ListAdapter<Relation, RelationsListAdapter.ViewHolder>(RelationsListDiffCallback()){

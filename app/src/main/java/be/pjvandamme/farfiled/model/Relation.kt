@@ -1,4 +1,4 @@
-package be.pjvandamme.farfiled.models
+package be.pjvandamme.farfiled.model
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

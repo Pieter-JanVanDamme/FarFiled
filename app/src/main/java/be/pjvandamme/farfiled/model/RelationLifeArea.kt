@@ -1,8 +1,8 @@
-package be.pjvandamme.farfiled.models
+package be.pjvandamme.farfiled.model
 
 import androidx.room.*
 import androidx.room.ForeignKey.CASCADE
-import be.pjvandamme.farfiled.database.util.Converters
+import be.pjvandamme.farfiled.util.Converters
 
 @Entity(tableName = "relation_life_area",
     foreignKeys = [ForeignKey(onDelete = CASCADE,

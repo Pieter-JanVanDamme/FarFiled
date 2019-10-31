@@ -1,9 +1,9 @@
-package be.pjvandamme.farfiled.presentation.relationslist
+package be.pjvandamme.farfiled.ui
 
 import android.app.Application
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import be.pjvandamme.farfiled.database.RelationDao
+import be.pjvandamme.farfiled.dao.RelationDao
 
 class RelationsListViewModelFactory(
     private val dataSource: RelationDao,

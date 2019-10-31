@@ -1,9 +1,9 @@
-package be.pjvandamme.farfiled.presentation.relationslist
+package be.pjvandamme.farfiled.ui
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
-import be.pjvandamme.farfiled.database.RelationDao
+import be.pjvandamme.farfiled.dao.RelationDao
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job

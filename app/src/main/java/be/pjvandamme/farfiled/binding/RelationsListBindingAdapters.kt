@@ -1,8 +1,8 @@
-package be.pjvandamme.farfiled.presentation.relationslist
+package be.pjvandamme.farfiled.binding
 
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
-import be.pjvandamme.farfiled.models.Relation
+import be.pjvandamme.farfiled.model.Relation
 
 @BindingAdapter("relationName")
 fun TextView.setRelationName(item: Relation?){

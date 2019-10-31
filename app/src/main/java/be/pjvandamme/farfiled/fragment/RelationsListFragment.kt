@@ -1,4 +1,4 @@
-package be.pjvandamme.farfiled.presentation.relationslist
+package be.pjvandamme.farfiled.fragment
 
 
 import android.os.Bundle
@@ -8,15 +8,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.LinearLayoutManager
 
 import be.pjvandamme.farfiled.R
-import be.pjvandamme.farfiled.database.FarFiledDatabase
+import be.pjvandamme.farfiled.persistence.FarFiledDatabase
 import be.pjvandamme.farfiled.databinding.FragmentRelationsListBinding
+import be.pjvandamme.farfiled.adapter.RelationsListAdapter
+import be.pjvandamme.farfiled.adapter.RelationsListListener
+import be.pjvandamme.farfiled.ui.RelationsListViewModelFactory
+import be.pjvandamme.farfiled.ui.RelationsListViewModel
 import timber.log.Timber
 
 /**
@@ -41,7 +42,9 @@ class RelationsListFragment : Fragment() {
         binding.createRelationFloatingActionButton.setOnClickListener{ view: View ->
             Timber.i("Clicked!")
             this.findNavController().navigate(
-                RelationsListFragmentDirections.actionRelationsListFragmentToRelationDetailFragment(-1L)
+                RelationsListFragmentDirections.actionRelationsListFragmentToRelationDetailFragment(
+                    -1L
+                )
             )
         }
 
@@ -49,7 +52,11 @@ class RelationsListFragment : Fragment() {
 
         val dataSource = FarFiledDatabase.getInstance(application).relationDao
 
-        val viewModelFactory = RelationsListViewModelFactory(dataSource, application)
+        val viewModelFactory =
+            RelationsListViewModelFactory(
+                dataSource,
+                application
+            )
 
         val relationsListViewModel =
             ViewModelProviders.of(
@@ -57,9 +64,10 @@ class RelationsListFragment : Fragment() {
 
         binding.relationsListViewModel = relationsListViewModel
 
-        val adapter = RelationsListAdapter(RelationsListListener { relationId ->
-            relationsListViewModel.onRelationClicked(relationId)
-        })
+        val adapter =
+            RelationsListAdapter(RelationsListListener { relationId ->
+                relationsListViewModel.onRelationClicked(relationId)
+            })
 
         binding.relationList.adapter = adapter
 
@@ -67,8 +75,9 @@ class RelationsListFragment : Fragment() {
             relation ->
                 relation?.let{
                     this.findNavController().navigate(
-                        RelationsListFragmentDirections
-                            .actionRelationsListFragmentToRelationDetailFragment(relation)
+                        RelationsListFragmentDirections.actionRelationsListFragmentToRelationDetailFragment(
+                            relation
+                        )
                     )
                     relationsListViewModel.onRelationDetailNavigated()
                 }

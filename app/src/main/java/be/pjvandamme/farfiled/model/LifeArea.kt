@@ -1,4 +1,4 @@
-package be.pjvandamme.farfiled.models
+package be.pjvandamme.farfiled.model
 
 enum class LifeArea(
     val title: String,

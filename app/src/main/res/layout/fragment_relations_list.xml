@@ -2,12 +2,12 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".presentation.relationslist.RelationsListFragment">
+    tools:context=".fragment.RelationsListFragment">
 
     <data>
         <variable
             name="relationsListViewModel"
-            type="be.pjvandamme.farfiled.presentation.relationslist.RelationsListViewModel" />
+            type="be.pjvandamme.farfiled.ui.RelationsListViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

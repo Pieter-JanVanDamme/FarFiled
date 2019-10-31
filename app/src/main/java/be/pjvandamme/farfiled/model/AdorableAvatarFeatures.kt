@@ -1,4 +1,4 @@
-package be.pjvandamme.farfiled.network
+package be.pjvandamme.farfiled.model
 
 import com.squareup.moshi.Json
 

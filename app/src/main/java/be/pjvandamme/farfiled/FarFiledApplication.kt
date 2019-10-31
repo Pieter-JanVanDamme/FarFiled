@@ -11,7 +11,6 @@ class FarFiledApplication: Application(){
     // TODO: documentatie
     // TODO: Repository + werken online/offline
     // TODO: (optioneel) - worker
-    // TODO: lifecycle-probleem in RelationDetailFragment oplossen
     override fun onCreate(){
         super.onCreate()
         if(BuildConfig.DEBUG){
