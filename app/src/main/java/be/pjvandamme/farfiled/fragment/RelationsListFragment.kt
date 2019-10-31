@@ -16,6 +16,7 @@ import be.pjvandamme.farfiled.persistence.FarFiledDatabase
 import be.pjvandamme.farfiled.databinding.FragmentRelationsListBinding
 import be.pjvandamme.farfiled.adapter.RelationsListAdapter
 import be.pjvandamme.farfiled.adapter.RelationsListListener
+import be.pjvandamme.farfiled.persistence.repository.RelationRepository
 import be.pjvandamme.farfiled.ui.RelationsListViewModelFactory
 import be.pjvandamme.farfiled.ui.RelationsListViewModel
 import timber.log.Timber
@@ -50,7 +51,7 @@ class RelationsListFragment : Fragment() {
 
         val application = requireNotNull(this.activity).application
 
-        val dataSource = FarFiledDatabase.getInstance(application).relationDao
+        val dataSource = RelationRepository(FarFiledDatabase.getInstance(application))
 
         val viewModelFactory =
             RelationsListViewModelFactory(
@@ -88,6 +89,12 @@ class RelationsListFragment : Fragment() {
         relationsListViewModel.relations.observe(viewLifecycleOwner, Observer {
             it?.let{
                 adapter.submitList(it)
+            }
+        })
+
+        relationsListViewModel.faces.observe(viewLifecycleOwner, Observer{
+            it.forEach{
+                Timber.i(it.toString())
             }
         })
 

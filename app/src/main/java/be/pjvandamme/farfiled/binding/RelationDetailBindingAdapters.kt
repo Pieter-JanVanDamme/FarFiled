@@ -88,24 +88,3 @@ fun bindImage(imgView: ImageView, imgUrl: String?){
             .into(imgView)
     }
 }
-
-//@BindingAdapter("editTextChangedListener")
-//fun bindTextWatcher(editText: EditText, number: Int){
-//    editText.addTextChangedListener(object: TextWatcher{
-//        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) { }
-//        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) { }
-//        override fun afterTextChanged(s: Editable?) {
-//            // de bindingadapter kent het viewmodel niet...
-//            relationDetailViewModel.onEditRelation(
-//                relationNameEditText.text.toString(),
-//                relationSynopsisEditText.text.toString(),
-//                lifeAreaNowEditText.text.toString(),
-//                lifeAreaSelfEditText.text.toString(),
-//                lifeAreaWorkEditText.text.toString(),
-//                lifeAreaHomeEditText.text.toString(),
-//                lifeAreaCircleEditText.text.toString(),
-//                lifeAreaFunEditText.text.toString()
-//            )
-//        }
-//    })
-//}

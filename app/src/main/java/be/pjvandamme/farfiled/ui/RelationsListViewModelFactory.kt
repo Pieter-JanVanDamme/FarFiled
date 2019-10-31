@@ -3,10 +3,10 @@ package be.pjvandamme.farfiled.ui
 import android.app.Application
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import be.pjvandamme.farfiled.dao.RelationDao
+import be.pjvandamme.farfiled.persistence.repository.RelationRepository
 
 class RelationsListViewModelFactory(
-    private val dataSource: RelationDao,
+    private val dataSource: RelationRepository,
     private val application: Application
 ) : ViewModelProvider.Factory {
     @Suppress("unchecked_cast")

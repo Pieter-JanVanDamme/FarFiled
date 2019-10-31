@@ -3,12 +3,12 @@ package be.pjvandamme.farfiled.ui
 import android.app.Application
 import androidx.lifecycle.*
 import kotlinx.coroutines.*
-import be.pjvandamme.farfiled.dao.RelationDao
-import be.pjvandamme.farfiled.dao.RelationLifeAreaDao
 import be.pjvandamme.farfiled.model.LifeArea
 import be.pjvandamme.farfiled.model.Relation
 import be.pjvandamme.farfiled.model.RelationLifeArea
 import be.pjvandamme.farfiled.network.AdorableAvatarApi
+import be.pjvandamme.farfiled.persistence.repository.RelationLifeAreaRepository
+import be.pjvandamme.farfiled.persistence.repository.RelationRepository
 import timber.log.Timber
 
 enum class RelationDetailEditText(val lifeArea: LifeArea?) {
@@ -24,8 +24,8 @@ enum class RelationDetailEditText(val lifeArea: LifeArea?) {
 
 class RelationDetailViewModel (
     private val relationKey: Long?,
-    val relationDatabase: RelationDao,
-    val relationLifeAreaDatabase: RelationLifeAreaDao,
+    val relationRepository: RelationRepository,
+    val relationLifeAreaRepository: RelationLifeAreaRepository,
     application: Application
 ): AndroidViewModel(application) {
     private var viewModelJob = Job()
@@ -70,34 +70,38 @@ class RelationDetailViewModel (
             getAdorableAvatarFacialFeatures()
         }
         else {
-            retrieveAvatarUrl()
-            relation.addSource(
-                relationDatabase.getRelationWithId(relationKey),
-                relation::setValue)
-            relationLifeAreas.addSource(
-                relationLifeAreaDatabase.getAllRelationLifeAreasForRelation(relationKey),
-                relationLifeAreas::setValue)
-            relationEdited.addSource(
-                relation,
-                relationEdited::setValue
-            )
-            relationLifeAreasEdited.addSource(
-                relationLifeAreas,
-                relationLifeAreasEdited::setValue
-            )
+            uiScope.launch {
+                retrieveAvatarUrl()
+                relation.addSource(
+                    relationRepository.getRelationWithId(relationKey),
+                    relation::setValue
+                )
+                relationLifeAreas.addSource(
+                    relationLifeAreaRepository.getAllRelationLifeAreasForRelation(relationKey),
+                    relationLifeAreas::setValue
+                )
+                relationEdited.addSource(
+                    relation,
+                    relationEdited::setValue
+                )
+                relationLifeAreasEdited.addSource(
+                    relationLifeAreas,
+                    relationLifeAreasEdited::setValue
+                )
+            }
         }
     }
 
     private fun initializeNewRelation(){
         uiScope.launch{
-            var relationId = insert(Relation(0L,"","",null))
+            var relationId = relationRepository.insert(Relation(0L,"","",null))
             initializeLifeAreasForRelation(relationId)
             relation.addSource(
-                relationDatabase.getRelationWithId(
+                relationRepository.getRelationWithId(
                         relationId!!),
                 relation::setValue)
             relationLifeAreas.addSource(
-                relationLifeAreaDatabase.getAllRelationLifeAreasForRelation(
+                relationLifeAreaRepository.getAllRelationLifeAreasForRelation(
                     relationId!!),
                 relationLifeAreas::setValue)
             relationEdited.addSource(
@@ -116,7 +120,7 @@ class RelationDetailViewModel (
             enumValues<LifeArea>().forEach {
                 uiScope.launch{
                     var relationLifeArea = RelationLifeArea(0L,relationId,it,"")
-                    insert(relationLifeArea)
+                    relationLifeAreaRepository.insert(relationLifeArea)
                 }
             }
         }
@@ -127,7 +131,7 @@ class RelationDetailViewModel (
         // from inside the ViewModel... Thus we are never sure that we have a Relation object
         // available from which to retrieve the URL
         uiScope.launch{
-            var rel = get(relationKey!!)
+            var rel = relationRepository.get(relationKey!!)
             var avatarUrl = rel?.avatarUrl
             // if the Relation has no avatar, that means there was a network issue upon creating
             // the Relation -- in that case, we'll give him one now.
@@ -152,11 +156,12 @@ class RelationDetailViewModel (
                         result.features.COLOR_PALETTE.shuffled().take(1)[0]
                 relation.value?.avatarUrl = _adorableAvatarString.value
             } catch(t:Throwable){
-                _adorableAvatarString.value = "Failure: " + t.message
+                _adorableAvatarString.value = null
             }
         }
     }
 
+    // TODO: check why _enableSaveButton is incorrect 1) when removing what was edited, 2) when rotating the device
     fun onEditRelation(changedText: String, relationDetailEditText: RelationDetailEditText){
         Timber.i("Received \"" + changedText + "\" from " + relationDetailEditText.toString())
         _enableSaveButton.value = !compareRelationAttributes(changedText, relationDetailEditText)
@@ -186,12 +191,12 @@ class RelationDetailViewModel (
             uiScope.launch {
                 relation.value?.name = relationEdited.value?.name ?: ""
                 relation.value?.synopsis = relationEdited.value?.synopsis ?: ""
-                update(relation.value)
+                relationRepository.update(relation.value)
                 relationLifeAreas.value?.forEach {
                     it?.let {
                         it.content = (relationLifeAreasEdited?.value?.singleOrNull{ copy ->
                             it.lifeArea == copy?.lifeArea})?.content ?: ""
-                        update(it)
+                        relationLifeAreaRepository.update(it)
                     }
                 }
             }
@@ -199,51 +204,6 @@ class RelationDetailViewModel (
         }
         else
             _showNameEmptySnackbar.value = true
-    }
-
-    private suspend fun get(key: Long): Relation?{
-        return withContext(Dispatchers.IO){
-            var relation = relationDatabase.get(key)
-            relation
-        }
-    }
-
-    private suspend fun insert(newRelation: Relation): Long?{
-        return withContext(Dispatchers.IO){
-            var relationId = relationDatabase.insert(newRelation)
-            relationId
-        }
-    }
-
-    private suspend fun insert(newRelationLifeArea: RelationLifeArea): Long?{
-        return withContext(Dispatchers.IO){
-            var relationLifeAreaId = relationLifeAreaDatabase.insert(newRelationLifeArea)
-            relationLifeAreaId
-        }
-    }
-
-    private suspend fun update(relation: Relation?){
-        if(relation != null) {
-            withContext(Dispatchers.IO) {
-                relationDatabase.update(relation)
-            }
-        }
-    }
-
-    private suspend fun update(relationLifeArea: RelationLifeArea?){
-        relationLifeArea?.let{
-            withContext(Dispatchers.IO){
-                relationLifeAreaDatabase.update(it)
-            }
-        }
-    }
-
-    private suspend fun delete(relation: Relation?){
-        if(relation != null){
-            withContext(Dispatchers.IO){
-                relationDatabase.delete(relation)
-            }
-        }
     }
 
     fun doneShowingNameEmptySnackbar(){
@@ -257,7 +217,7 @@ class RelationDetailViewModel (
     fun onCancel(){
         if(relationKey == null || relationKey == -1L) {
             uiScope.launch {
-                delete(relation.value)
+                relationRepository.delete(relation.value)
             }
         }
         _navigateToRelationsList.value = true

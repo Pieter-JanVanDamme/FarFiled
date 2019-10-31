@@ -17,6 +17,8 @@ import be.pjvandamme.farfiled.databinding.FragmentRelationDetailBinding
 import android.text.Editable
 import android.text.TextWatcher
 import android.widget.LinearLayout
+import be.pjvandamme.farfiled.persistence.repository.RelationLifeAreaRepository
+import be.pjvandamme.farfiled.persistence.repository.RelationRepository
 import be.pjvandamme.farfiled.ui.RelationDetailViewModelFactory
 import be.pjvandamme.farfiled.ui.RelationDetailEditText
 import be.pjvandamme.farfiled.ui.RelationDetailViewModel
@@ -28,16 +30,6 @@ import kotlinx.android.synthetic.main.fragment_relation_detail.*
  * A simple [Fragment] subclass.
  */
 class RelationDetailFragment : Fragment() {
-
-//    var editRelation: EditRelationParcelable? = null
-
-//    override fun onActivityCreated(savedInstanceState: Bundle?) {
-//        super.onActivityCreated(savedInstanceState)
-//        if(savedInstanceState != null){
-//            editRelation = savedInstanceState
-//                .getParcelable<EditRelationParcelable>("editRelation")
-//        }
-//    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -58,9 +50,9 @@ class RelationDetailFragment : Fragment() {
                 arguments!!
             )
 
-        val relationDataSource = FarFiledDatabase.getInstance(application).relationDao
+        val relationDataSource = RelationRepository(FarFiledDatabase.getInstance(application))
 
-        val relationLifeAreaDataSource = FarFiledDatabase.getInstance(application).relationLifeAreaDao
+        val relationLifeAreaDataSource = RelationLifeAreaRepository(FarFiledDatabase.getInstance(application))
 
         val viewModelFactory =
             RelationDetailViewModelFactory(
@@ -115,14 +107,6 @@ class RelationDetailFragment : Fragment() {
 
         binding.saveButton.isEnabled = false
 
-//        binding.relationNameEditText.addTextChangedListener(textWatcher)
-//        binding.relationSynopsisEditText.addTextChangedListener(textWatcher)
-//        binding.lifeAreaNowEditText.addTextChangedListener(textWatcher)
-//        binding.lifeAreaSelfEditText.addTextChangedListener(textWatcher)
-//        binding.lifeAreaWorkEditText.addTextChangedListener(textWatcher)
-//        binding.lifeAreaHomeEditText.addTextChangedListener(textWatcher)
-//        binding.lifeAreaCircleEditText.addTextChangedListener(textWatcher)
-//        binding.lifeAreaFunEditText.addTextChangedListener(textWatcher)
         binding.relationNameEditText.addTextChangedListener(
             RelationEditTextWatcher(RelationDetailEditText.NAME))
         binding.relationSynopsisEditText.addTextChangedListener(
@@ -174,21 +158,6 @@ class RelationDetailFragment : Fragment() {
 
         return binding.root
     }
-
-//    override fun onSaveInstanceState(outState: Bundle) {
-//        super.onSaveInstanceState(outState)
-//        var editRelation = EditRelationParcelable(
-//            relationNameEditText.text.toString(),
-//            relationSynopsisEditText.text.toString(),
-//            lifeAreaNowEditText.text.toString(),
-//            lifeAreaSelfEditText.text.toString(),
-//            lifeAreaWorkEditText.text.toString(),
-//            lifeAreaHomeEditText.text.toString(),
-//            lifeAreaCircleEditText.text.toString(),
-//            lifeAreaFunEditText.text.toString()
-//        )
-//        outState.putParcelable("editRelation", editRelation)
-//    }
 
     private fun hideLifeAreasLayoutsExcept(visibleLayout: LinearLayout?,
                                            allLayouts: List<LinearLayout>
