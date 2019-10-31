@@ -1,8 +1,10 @@
 package be.pjvandamme.farfiled.network
 
 
+import be.pjvandamme.farfiled.model.Face
 import be.pjvandamme.farfiled.persistence.DatabaseFace
 import com.squareup.moshi.JsonClass
+import timber.log.Timber
 
 @JsonClass(generateAdapter = true)
 data class NetworkFace(
@@ -17,6 +19,7 @@ data class NetworkFace(
 }
 
 fun List<NetworkFace>.asDatabaseModel(): Array<DatabaseFace>{
+    Timber.i("List<NetworkFace>.asDatabaseModel called.")
     return map{
         DatabaseFace(
             name = it.name,
@@ -26,4 +29,3 @@ fun List<NetworkFace>.asDatabaseModel(): Array<DatabaseFace>{
         )
     }.toTypedArray()
 }
-

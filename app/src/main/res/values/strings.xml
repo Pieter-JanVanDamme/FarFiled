@@ -9,6 +9,7 @@
     <string name="relationSynopsisToolText">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco.</string>
     <string name="relationNameToolText">+FiLas (First Lastname)</string>
     <string name="nameEmptyMessage">A relation without a name cannot be saved!</string>
+    <string name="couldNotGenerateMessage">Could not populate the list with relations.</string>
     <string name="nowLabel">Now:</string>
     <string name="selfLabel">Self:</string>
     <string name="workLabel">Work:</string>
@@ -22,4 +23,5 @@
     <string name="circleText">Circle</string>
     <string name="funText">Fun</string>
     <string name="synopsisText">Synopsis</string>
+    <string name="generateRandomText">Generate Random Relations</string>
 </resources>

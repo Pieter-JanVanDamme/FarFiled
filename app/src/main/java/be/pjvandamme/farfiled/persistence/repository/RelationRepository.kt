@@ -5,6 +5,7 @@ import be.pjvandamme.farfiled.model.Relation
 import be.pjvandamme.farfiled.persistence.FarFiledDatabase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import timber.log.Timber
 
 class RelationRepository(private val database: FarFiledDatabase){
     suspend fun get(key: Long): Relation?{
@@ -26,6 +27,7 @@ class RelationRepository(private val database: FarFiledDatabase){
     }
 
     suspend fun insert(newRelation: Relation): Long?{
+        Timber.i("About to insert new relation (${newRelation.name} into database.")
         return withContext(Dispatchers.IO){
             var relationId = database.relationDao.insert(newRelation)
             relationId

@@ -19,6 +19,7 @@ import be.pjvandamme.farfiled.adapter.RelationsListListener
 import be.pjvandamme.farfiled.persistence.repository.RelationRepository
 import be.pjvandamme.farfiled.ui.RelationsListViewModelFactory
 import be.pjvandamme.farfiled.ui.RelationsListViewModel
+import com.google.android.material.snackbar.Snackbar
 import timber.log.Timber
 
 /**
@@ -40,8 +41,9 @@ class RelationsListFragment : Fragment() {
             container,
             false
         )
+
         binding.createRelationFloatingActionButton.setOnClickListener{ view: View ->
-            Timber.i("Clicked!")
+            Timber.i("Create Relation action button clicked!")
             this.findNavController().navigate(
                 RelationsListFragmentDirections.actionRelationsListFragmentToRelationDetailFragment(
                     -1L
@@ -72,6 +74,12 @@ class RelationsListFragment : Fragment() {
 
         binding.relationList.adapter = adapter
 
+        binding.generateRandomRelationsButton.setOnClickListener{view: View ->
+            Timber.i("Generate Random Relations clicked.")
+
+            relationsListViewModel.fillRelationList()
+        }
+
         relationsListViewModel.navigateToRelationDetail.observe(viewLifecycleOwner, Observer{
             relation ->
                 relation?.let{
@@ -84,17 +92,44 @@ class RelationsListFragment : Fragment() {
                 }
         })
 
+        relationsListViewModel.showGenerateRelationsListButton.observe(viewLifecycleOwner, Observer{
+            show ->
+            if(show){
+                binding.generateRandomRelationsButton.visibility = View.VISIBLE
+            }
+            else
+                binding.generateRandomRelationsButton.visibility = View.GONE
+        })
+
+        relationsListViewModel.showCouldNotPopulateRelationsListSnackbar.observe(viewLifecycleOwner, Observer{
+            if(it){
+                Snackbar.make(
+                    activity!!.findViewById(android.R.id.content),
+                    getString(R.string.couldNotGenerateMessage),
+                    Snackbar.LENGTH_LONG
+                ).show()
+                relationsListViewModel.doneShowingCouldNotPopulateSnackbar()
+            }
+        })
+
         // Todo: BROKEN IMAGE when avatar not available etc.
 
         relationsListViewModel.relations.observe(viewLifecycleOwner, Observer {
-            it?.let{
-                adapter.submitList(it)
+            if(!it.isNullOrEmpty()){
+                relationsListViewModel.hideGenerateRandomRelationsButton()
+                it?.let {
+                    adapter.submitList(it)
+                }
             }
         })
 
         relationsListViewModel.faces.observe(viewLifecycleOwner, Observer{
+            if(relationsListViewModel.relations.value.isNullOrEmpty()
+                    && !relationsListViewModel.faces.value.isNullOrEmpty())
+                relationsListViewModel.showGenerateRandomRelationsButton()
+
             it.forEach{
-                Timber.i(it.toString())
+                Timber.i("Observed face: $it")
             }
         })
 
