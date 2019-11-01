@@ -64,18 +64,16 @@ class RelationsListViewModel(
     }
 
     private fun relationFromFace(newFace: Face){
-        if(newFace != null) {
-            Timber.i("relationFromFace executing, about to launch insert for ${newFace.name}")
-            uiScope.launch {
-                relationRepository.insert(
-                    Relation(
-                        name = newFace.name,
-                        synopsis = newFace.position,
-                        avatarUrl = newFace.photo
-                    )
+        Timber.i("relationFromFace executing, about to launch insert for ${newFace.name}")
+        uiScope.launch {
+            relationRepository.insert(
+                Relation(
+                    name = newFace.name,
+                    synopsis = newFace.position,
+                    avatarUrl = newFace.photo
                 )
-                faceRepository.delete(newFace)
-            }
+            )
+            faceRepository.delete(newFace)
         }
     }
 

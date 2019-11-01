@@ -17,6 +17,7 @@ buildscript {
         version_lifecycle_compiler = "2.1.0-alpha03"
         version_savedstate = "1.0.0-alpha01"
         version_serialization = "0.9.1"
+        version_work = "1.0.0-alpha11"
     }
     repositories {
         google()

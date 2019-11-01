@@ -10,7 +10,7 @@ import be.pjvandamme.farfiled.util.Converters
         parentColumns=["relationId"],
         childColumns = ["relationId"])],
     indices = arrayOf(
-        Index(value = *arrayOf("relationLifeAreaId", "relationId"))
+        Index(value = arrayOf("relationLifeAreaId", "relationId"))
     ))
 data class RelationLifeArea(
     @PrimaryKey(autoGenerate = true)

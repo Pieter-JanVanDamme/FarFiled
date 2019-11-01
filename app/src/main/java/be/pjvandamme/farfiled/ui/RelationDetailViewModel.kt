@@ -102,7 +102,7 @@ class RelationDetailViewModel (
                 relation::setValue)
             relationLifeAreas.addSource(
                 relationLifeAreaRepository.getAllRelationLifeAreasForRelation(
-                    relationId!!),
+                    relationId),
                 relationLifeAreas::setValue)
             relationEdited.addSource(
                 relation,
@@ -168,7 +168,7 @@ class RelationDetailViewModel (
         when(relationDetailEditText){
             RelationDetailEditText.NAME -> relationEdited.value?.name = changedText
             RelationDetailEditText.SYNOPSIS -> relationEdited.value?.synopsis = changedText
-            else -> (relationLifeAreas?.value?.singleOrNull{
+            else -> (relationLifeAreas.value?.singleOrNull{
                 it?.lifeArea == relationDetailEditText.lifeArea})?.content = changedText
         }
     }
@@ -180,10 +180,9 @@ class RelationDetailViewModel (
         when(relationDetailEditText){
             RelationDetailEditText.NAME -> return relation.value?.name == changedText
             RelationDetailEditText.SYNOPSIS -> return relation.value?.synopsis == changedText
-            else -> return (relationLifeAreasEdited?.value?.singleOrNull{
+            else -> return (relationLifeAreasEdited.value?.singleOrNull{
                 it?.lifeArea == relationDetailEditText.lifeArea})?.content == changedText
         }
-        return true
     }
 
     fun onSave(){
@@ -194,7 +193,7 @@ class RelationDetailViewModel (
                 relationRepository.update(relation.value)
                 relationLifeAreas.value?.forEach {
                     it?.let {
-                        it.content = (relationLifeAreasEdited?.value?.singleOrNull{ copy ->
+                        it.content = (relationLifeAreasEdited.value?.singleOrNull{ copy ->
                             it.lifeArea == copy?.lifeArea})?.content ?: ""
                         relationLifeAreaRepository.update(it)
                     }

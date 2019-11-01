@@ -42,7 +42,7 @@ class RelationsListFragment : Fragment() {
             false
         )
 
-        binding.createRelationFloatingActionButton.setOnClickListener{ view: View ->
+        binding.createRelationFloatingActionButton.setOnClickListener{
             Timber.i("Create Relation action button clicked!")
             this.findNavController().navigate(
                 RelationsListFragmentDirections.actionRelationsListFragmentToRelationDetailFragment(
@@ -74,7 +74,7 @@ class RelationsListFragment : Fragment() {
 
         binding.relationList.adapter = adapter
 
-        binding.generateRandomRelationsButton.setOnClickListener{view: View ->
+        binding.generateRandomRelationsButton.setOnClickListener{
             Timber.i("Generate Random Relations clicked.")
 
             relationsListViewModel.fillRelationList()
@@ -117,7 +117,7 @@ class RelationsListFragment : Fragment() {
         relationsListViewModel.relations.observe(viewLifecycleOwner, Observer {
             if(!it.isNullOrEmpty()){
                 relationsListViewModel.hideGenerateRandomRelationsButton()
-                it?.let {
+                it.let {
                     adapter.submitList(it)
                 }
             }

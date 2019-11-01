@@ -83,4 +83,7 @@ dependencies {
 
     // Serializable
     implementation "org.jetbrains.kotlinx:kotlinx-serialization-runtime:$version_serialization"
+
+    // WorkManager
+    implementation "android.arch.work:work-runtime-ktx:$version_work"
 }

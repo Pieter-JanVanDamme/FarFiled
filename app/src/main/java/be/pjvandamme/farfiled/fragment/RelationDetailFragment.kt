@@ -80,7 +80,7 @@ class RelationDetailFragment : Fragment() {
             binding.funLayout
         )
 
-        binding.editTextChips.setOnCheckedChangeListener { chipGroup, i ->
+        binding.editTextChips.setOnCheckedChangeListener { _, i ->
             when(i){
                 synopsisChip.id -> hideLifeAreasLayoutsExcept(binding.synopsisLayout, lifeAreaLayouts)
                 nowChip.id -> hideLifeAreasLayoutsExcept(binding.nowLayout, lifeAreaLayouts)
