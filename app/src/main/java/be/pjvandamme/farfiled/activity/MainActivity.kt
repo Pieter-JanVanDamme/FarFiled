@@ -4,6 +4,11 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import be.pjvandamme.farfiled.R
 
+/**
+ * The main activity for FarFiled allows users to manage their personal relationsips.
+ * The initial fragment represents a list of their 'relations' and lets them view/edit one of
+ * them OR create a new one in a second fragment.
+ */
 class MainActivity : AppCompatActivity() {
 
 
