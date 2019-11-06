@@ -23,5 +23,8 @@
     <string name="circleText">Circle</string>
     <string name="funText">Fun</string>
     <string name="synopsisText">Synopsis</string>
-    <string name="generateRandomText">Generate Random Relations</string>
+    <string name="generateRandomText">Add Random Relations</string>
+    <string name="addRandomRelationsTitle">Confirm Amount of Random Relations to Add</string>
+    <string name="addRandomRelationsOK">OK</string>
+    <string name="addRandomRelationsCancel">Cancel</string>
 </resources>

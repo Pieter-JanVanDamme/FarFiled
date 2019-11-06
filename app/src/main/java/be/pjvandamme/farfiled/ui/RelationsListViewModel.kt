@@ -49,15 +49,16 @@ class RelationsListViewModel(
     val navigateToRelationDetail
         get() = _navigateToRelationDetail
 
-    fun fillRelationList(){
+    fun addFacesToRelationsList(amount: Int){
         if(!faces.value.isNullOrEmpty()) {
             Timber.i("Size of faces is ${faces.value?.size}")
-            var facesList: List<Face>? = faces.value?.take(UI_FACES_POPULATE_AMOUNT)
+            var facesList: List<Face>? = faces.value?.take(amount)
             facesList?.forEach {
                 Timber.i("About to execute relationFromFace for ${it.name}")
                 relationFromFace(it)
             }
-            _showGenerateRelationsListButton.value = false
+            if(faces.value.isNullOrEmpty())
+                _showGenerateRelationsListButton.value = false
         }
         else
             _showCouldNotPopulateRelationsListSnackbar.value = true

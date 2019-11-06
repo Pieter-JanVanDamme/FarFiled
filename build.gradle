@@ -18,6 +18,8 @@ buildscript {
         version_savedstate = "1.0.0-alpha01"
         version_serialization = "0.9.1"
         version_work = "1.0.0-alpha11"
+        version_okhttp = "4.2.1"
+        version_multidex = "2.0.1"
     }
     repositories {
         google()

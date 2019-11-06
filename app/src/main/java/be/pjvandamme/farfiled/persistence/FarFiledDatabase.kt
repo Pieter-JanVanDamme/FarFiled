@@ -11,10 +11,10 @@ import be.pjvandamme.farfiled.model.RelationLifeArea
 import be.pjvandamme.farfiled.util.Converters
 
 @Database(entities = [Relation::class, RelationLifeArea::class, DatabaseFace::class],
-    version = 28,
+    version = 26,
     exportSchema = false)
 @TypeConverters(Converters::class)
-abstract class FarFiledDatabase(): RoomDatabase() {
+abstract class FarFiledDatabase: RoomDatabase() {
     abstract val relationDao: RelationDao
     abstract val relationLifeAreaDao: RelationLifeAreaDao
     abstract val faceDao: FaceDao
