@@ -25,7 +25,7 @@ class FaceRepository(private val database: FarFiledDatabase){
             Timber.i("FaceRepository.Delete(face: Face?) called for ${face.name}")
         }
     }
-    // no return to avoid it being used for getting faces
+    // no return of Face objects to avoid it being used for getting faces
     suspend fun refreshFaces(){
         withContext(Dispatchers.IO){
             try {

@@ -57,11 +57,11 @@ class RelationsListViewModel(
                 Timber.i("About to execute relationFromFace for ${it.name}")
                 relationFromFace(it)
             }
-            if(faces.value.isNullOrEmpty())
-                _showGenerateRelationsListButton.value = false
+//            if(faces.value.isNullOrEmpty())
+//                _showGenerateRelationsListButton.value = false
         }
-        else
-            _showCouldNotPopulateRelationsListSnackbar.value = true
+//        else
+//            _showCouldNotPopulateRelationsListSnackbar.value = true
     }
 
     private fun relationFromFace(newFace: Face){
@@ -78,13 +78,13 @@ class RelationsListViewModel(
         }
     }
 
-    fun showGenerateRandomRelationsButton(){
-        _showGenerateRelationsListButton.value = true
-    }
+//    fun showGenerateRandomRelationsButton(){
+//        _showGenerateRelationsListButton.value = true
+//    }
 
-    fun hideGenerateRandomRelationsButton(){
-        _showGenerateRelationsListButton.value = false
-    }
+//    fun hideGenerateRandomRelationsButton(){
+//        _showGenerateRelationsListButton.value = false
+//    }
 
     fun showCouldNotPopulateSnackbar(){
         _showCouldNotPopulateRelationsListSnackbar.value = true

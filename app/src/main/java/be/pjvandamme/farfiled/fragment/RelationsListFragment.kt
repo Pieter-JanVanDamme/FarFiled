@@ -120,14 +120,21 @@ class RelationsListFragment : Fragment() {
                 }
         })
 
-        relationsListViewModel.showGenerateRelationsListButton.observe(viewLifecycleOwner, Observer{
-            show ->
-            if(show){
-                binding.generateRandomRelationsButton.visibility = View.VISIBLE
-            }
-            else
+        relationsListViewModel.faces.observe(viewLifecycleOwner, Observer{
+            if(it.isNullOrEmpty())
                 binding.generateRandomRelationsButton.visibility = View.GONE
+            else
+                binding.generateRandomRelationsButton.visibility = View.VISIBLE
         })
+
+//        relationsListViewModel.showGenerateRelationsListButton.observe(viewLifecycleOwner, Observer{
+//            show ->
+//            if(show){
+//                binding.generateRandomRelationsButton.visibility = View.VISIBLE
+//            }
+//            else
+//                binding.generateRandomRelationsButton.visibility = View.GONE
+//        })
 
         relationsListViewModel.showCouldNotPopulateRelationsListSnackbar.observe(viewLifecycleOwner, Observer{
             if(it){
@@ -151,15 +158,15 @@ class RelationsListFragment : Fragment() {
             }
         })
 
-        relationsListViewModel.faces.observe(viewLifecycleOwner, Observer{
-            if(/*relationsListViewModel.relations.value.isNullOrEmpty()
-                    &&*/ !relationsListViewModel.faces.value.isNullOrEmpty())
-                relationsListViewModel.showGenerateRandomRelationsButton()
-
-            it.forEach{
-                Timber.i("Observed face: $it")
-            }
-        })
+//        relationsListViewModel.faces.observe(viewLifecycleOwner, Observer{
+//            if(/*relationsListViewModel.relations.value.isNullOrEmpty()
+//                    &&*/ !relationsListViewModel.faces.value.isNullOrEmpty())
+//                relationsListViewModel.showGenerateRandomRelationsButton()
+//
+//            it.forEach{
+//                Timber.i("Observed face: $it")
+//            }
+//        })
 
         binding.setLifecycleOwner(this)
 
