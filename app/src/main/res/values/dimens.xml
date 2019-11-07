@@ -3,4 +3,5 @@
     <dimen name="relationNameEditWidth">275dp</dimen>
     <dimen name="listItemRelationImageSize">64dp</dimen>
     <dimen name="relationDetailLayoutMargin">24dp</dimen>
+    <dimen name="relationsListRecyclerPaddingBottom">80dp</dimen>
 </resources>
