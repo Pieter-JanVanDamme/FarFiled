@@ -52,6 +52,10 @@ class RelationDetailViewModel (
     val enableSaveButton: LiveData<Boolean>
         get() = _enableSaveButton
 
+    private var _enableDeleteButton = MutableLiveData<Boolean>()
+    val enableDeleteButton: LiveData<Boolean>
+        get() = _enableDeleteButton
+
     private var _showNameEmptySnackbar = MutableLiveData<Boolean>()
     val showNameEmptySnackbar: LiveData<Boolean>
         get() = _showNameEmptySnackbar
@@ -89,10 +93,12 @@ class RelationDetailViewModel (
                     relationLifeAreasEdited::setValue
                 )
             }
+            _enableDeleteButton.value = true
         }
     }
 
     private fun initializeNewRelation(){
+        _enableDeleteButton.value = false
         uiScope.launch{
             var relationId = relationRepository.insert(Relation(0L,"","",null))
             initializeLifeAreasForRelation(relationId)
@@ -216,6 +222,15 @@ class RelationDetailViewModel (
     fun onCancel(){
         if(relationKey == null || relationKey == -1L) {
             uiScope.launch {
+                relationRepository.delete(relation.value)
+            }
+        }
+        _navigateToRelationsList.value = true
+    }
+
+    fun onDelete(){
+        if(relationKey != null || relationKey != -1L){
+            uiScope.launch{
                 relationRepository.delete(relation.value)
             }
         }

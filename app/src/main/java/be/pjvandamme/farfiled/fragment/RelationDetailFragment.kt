@@ -130,6 +130,15 @@ class RelationDetailFragment : Fragment() {
             }
         })
 
+        relationDetailViewModel.enableDeleteButton.observe(this, Observer{ enable ->
+            enable?.let{
+                if(it)
+                    binding.deleteButton.visibility = View.VISIBLE
+                else
+                    binding.deleteButton.visibility = View.GONE
+            }
+        })
+
         relationDetailViewModel.showNameEmptySnackbar.observe(this, Observer{show ->
             if(show){
                 Snackbar.make(

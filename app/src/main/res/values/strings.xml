@@ -27,4 +27,5 @@
     <string name="addRandomRelationsTitle">Confirm Amount of Random Relations to Add</string>
     <string name="addRandomRelationsOK">OK</string>
     <string name="addRandomRelationsCancel">Cancel</string>
+    <string name="deleteText">Delete</string>
 </resources>
