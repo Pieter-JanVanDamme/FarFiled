@@ -72,7 +72,6 @@ class RelationsListFragment : Fragment() {
 
         val adapter =
             RelationsListAdapter(RelationsListListener { relationId ->
-
                 relationsListViewModel.onRelationClicked(relationId)
             })
 
